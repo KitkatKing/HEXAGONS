@@ -7,7 +7,7 @@ public class Hexledata : MonoBehaviour
 
     public static readonly Vector3[] vert = new Vector3[12]
     {
-        new Vector3(0.25f ,0.75f ,0.94f ), new Vector3(0.75f ,0.75f ,0.94f ), new Vector3(1 ,0.75f ,0.5f ),
+        new Vector3(0.25f ,1f ,0.94f ), new Vector3(0.75f ,0.75f ,0.94f ), new Vector3(1 ,0.75f ,0.5f ),
         new Vector3(0.75f ,0.75f ,0.06f ), new Vector3(0.25f ,0.75f ,0.06f ), new Vector3(0 ,0.75f ,0.5f ),
         new Vector3(0.25f ,0 ,0.94f ), new Vector3(0.75f ,0 ,0.94f ), new Vector3(1 ,0 ,0.5f ),
         new Vector3(0.75f ,0 ,0.06f ), new Vector3(0.25f ,0 ,0.06f ), new Vector3(0 ,0 ,0.5f )
