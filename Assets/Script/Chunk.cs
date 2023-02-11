@@ -287,7 +287,7 @@ public class Chunk : MonoBehaviour
 
     public bool testside(Vector3Int position, int side)
     {
-
+        //done
         if(side == 0)
         {
             if(position.y + 1 >= CHUNK_SIZE.y)
@@ -311,9 +311,10 @@ public class Chunk : MonoBehaviour
 
         }
 
-
+        //done
         if (side == 1)
         {
+          //  return false;
 
             if (position.z - 1 < 0)
             {
@@ -336,20 +337,21 @@ public class Chunk : MonoBehaviour
 
         }
 
-
+        //done
         if(side == 5)
         {
+           // return false;
 
             if (position.x % 2 == 0)
             {
-                if (position.x + 1 >= CHUNK_SIZE.x || position.z - 1 < 0)
+                if (position.x - 1 < 0)
                 {
                     Debug.Log("edge hex");
                     return true;
 
                 }
                 else
-                if (chunkData[position.x + 1, position.y, position.z - 1] == null)
+                if (chunkData[position.x - 1, position.y, position.z] == null)
                 {
                     Debug.Log("bruh");
                     return true;
@@ -363,14 +365,14 @@ public class Chunk : MonoBehaviour
             }
             else
             {
-                if (position.x + 1 >= CHUNK_SIZE.x || position.z - 1 < 0)
+                if (position.x - 1 < 0 || position.z + 1 >= CHUNK_SIZE.x)
                 {
                     Debug.Log("edge hex");
                     return true;
 
                 }
                 else
-                if (chunkData[position.x + 1, position.y, position.z - 1] == null)
+                if (chunkData[position.x - 1, position.y, position.z + 1] == null)
                 {
                     Debug.Log("bruh");
                     return true;
@@ -386,8 +388,10 @@ public class Chunk : MonoBehaviour
 
         }
 
+        //done
         if (side == 6)
         {
+          //  return false;
 
             if (position.x % 2 == 0)
             {
@@ -437,84 +441,165 @@ public class Chunk : MonoBehaviour
 
 
 
-
+        //done
         if (side == 4)
         {
+           // return true;
 
-            if (position.z + 1 >= CHUNK_SIZE.x)
+            if (position.x % 2 == 0)
             {
-                Debug.Log("edge hex");
-                return true;
+                if ( position.z + 1 >= CHUNK_SIZE.x)
+                {
+                    Debug.Log("edge hex");
+                    return true;
 
+                }
+                else
+                if (chunkData[position.x, position.y, position.z + 1] == null)
+                {
+                    Debug.Log("bruh");
+                    return true;
+
+                }
+                else
+                {
+                    Debug.Log("wh?");
+                    return false;
+                }
             }
             else
-              if (chunkData[position.x, position.y, position.z + 1] == null)
             {
-                Debug.Log("bruh");
-                return true;
+                if (position.z + 1 >= CHUNK_SIZE.x)
+                {
+                    Debug.Log("edge hex");
+                    return true;
+
+                }
+                else
+                if (chunkData[position.x , position.y, position.z + 1] == null)
+                {
+                    Debug.Log("bruh");
+                    return true;
+
+                }
+                else
+                {
+                    Debug.Log("wh?");
+                    return false;
+                }
 
             }
-            else
-            {
-                Debug.Log("wh?");
-                return false;
-            }
-
         }
 
-
+        //done
         if (side == 2)
         {
+            //  return false;
 
-            if (position.x + 1 >= CHUNK_SIZE.x)
+
+            if (position.x % 2 == 0)
             {
-                Debug.Log("edge hex");
-                return true;
+                if (position.x + 1 >= CHUNK_SIZE.x || position.z - 1 < 0)
+                {
+                    Debug.Log("edge hex");
+                    return true;
 
+                }
+                else
+                if (chunkData[position.x + 1, position.y, position.z - 1] == null)
+                {
+                    Debug.Log("bruh");
+                    return true;
+
+                }
+                else
+                {
+                    Debug.Log("wh?");
+                    return false;
+                }
             }
             else
-            if (chunkData[position.x + 1, position.y, position.z] == null)
             {
-                Debug.Log("bruh");
-                return true;
+                if (position.x + 1 >= CHUNK_SIZE.x)
+                {
+                    Debug.Log("edge hex");
+                    return true;
+
+                }
+                else
+                if (chunkData[position.x + 1, position.y, position.z] == null)
+                {
+                    Debug.Log("bruh");
+                    return true;
+
+                }
+                else
+                {
+                    Debug.Log("wh?");
+                    return false;
+                }
+
+
 
             }
-            else
-            {
-                Debug.Log("wh?");
-                return false;
-            }
-
-
 
         }
 
         if (side == 3)
         {
+           // return true;
 
-            if (position.x + 1 >= CHUNK_SIZE.x)
+            if (position.x % 2 == 0)
             {
-                Debug.Log("edge hex");
-                return true;
+                if (position.x + 1 >= CHUNK_SIZE.x)
+                {
+                    Debug.Log("edge hex");
+                    return true;
 
+                }
+                else
+                if (chunkData[position.x + 1, position.y, position.z] == null)
+                {
+                    Debug.Log("bruh");
+                    return true;
+
+                }
+                else
+                {
+                    Debug.Log("wh?");
+                    return false;
+                }
             }
             else
-            if (chunkData[position.x + 1, position.y, position.z] == null)
             {
-                Debug.Log("bruh");
-                return true;
+                if (position.x + 1 >= CHUNK_SIZE.x || position.z + 1 >= CHUNK_SIZE.x)
+                {
+                    Debug.Log("edge hex");
+                    return true;
+
+                }
+                else
+                if (chunkData[position.x + 1, position.y, position.z + 1] == null)
+                {
+                    Debug.Log("bruh");
+                    return true;
+
+                }
+                else
+                {
+                    Debug.Log("wh?");
+                    return false;
+                }
+
+
 
             }
-            else
-            {
-                Debug.Log("wh?");
-                return false;
-            }
-
 
 
         }
 
+
+        //done
         if (side == 7)
         {
             if (position.y - 1 < 0)
@@ -536,14 +621,6 @@ public class Chunk : MonoBehaviour
             }
 
         }
-
-
-
-
-
-
-
-
 
 
         return false;
