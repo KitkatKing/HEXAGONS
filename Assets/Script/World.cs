@@ -8,8 +8,9 @@ public class World : MonoBehaviour
 
     public Chunk[,,] world;
 
-    public Vector3Int worldcheck = new Vector3Int(5, 5, 5);
+    public Vector3Int worldcheck;
 
+    public Material material;
 
 
     void Start()
@@ -24,14 +25,14 @@ public class World : MonoBehaviour
                 for(int z = 0; z < worldcheck.x; z++)
                 {
 
-                    world[x, y, z] = new Chunk(Vector3.zero, gameObject.GetComponent<MeshFilter>()); ;
+                    world[x, y, z] = new Chunk(new Vector3Int(x,y,z), gameObject.GetComponent<MeshFilter>(), material); ;
 
                 }
             }
         }
+        
 
-
-      //  Chunk chunky = new Chunk(Vector3.zero, gameObject.GetComponent<MeshFilter>());
+      //  Chunk chunky = new Chunk(Vector3Int.zero, gameObject.GetComponent<MeshFilter>());
 
     }
 

@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
-
+ 
     private Vector3Int CHUNK_SIZE = new Vector3Int(32, 32, 32);
 
-    private Vector3 position;
+    private Vector3Int chunkPosition;
     private Vector3 globalPosition;
 
     public Hexagon[,,] chunkData;
 
-
+    GameObject gameObject;
 
     public MeshRenderer meshRenderer;
     public MeshFilter meshFilter;
@@ -29,16 +29,23 @@ public class Chunk : MonoBehaviour
 
 
 
-    public Chunk(Vector3 position, MeshFilter mesh)
+    public Chunk(Vector3Int chunkPosition, MeshFilter mesh, Material material)
     {
-        this.position = position;
+
+        this.gameObject = new GameObject("Chunk" + chunkPosition, typeof(MeshFilter), typeof(MeshRenderer));
+
+        this.chunkPosition = chunkPosition;
+
+        this.globalPosition = new Vector3(chunkPosition.x * 32 * 0.75f, chunkPosition.y * 32 * 0.75f, chunkPosition.z * 32 * 0.94f);
 
         this.chunkData = new Hexagon[CHUNK_SIZE.x, CHUNK_SIZE.y, CHUNK_SIZE.z];
 
         this.meshFilter = mesh;
 
+        this.material = material;
+
         CreateAllHex();
-        RemoveOneHex(new Vector3Int(16,16,16));
+        //CreateOneHex(new Vector3Int(16,16,16));
         EstablishChunkVertices();
         EstablishChunkuvs();
         EstablishChunktris();
@@ -70,6 +77,14 @@ public class Chunk : MonoBehaviour
     }
 
 
+    public void CreateOneHex(Vector3Int pos)
+    {
+
+        this.chunkData[pos.x, pos.y, pos.z] = new Hexagon();
+
+    }
+
+
 
 
     public void EstablishChunkVertices()
@@ -80,45 +95,45 @@ public class Chunk : MonoBehaviour
             {
                 for (int K = 0; K < CHUNK_SIZE.y; K++)
                 {
-                    if (this.chunkData != null)
+                    if (this.chunkData[I,J,K] != null)
                     {
 
                         if (I % 2 == 0)
                         {
 
-                            vertices.Add(Hexledata.vert[0] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[1] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[2] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[3] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[4] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[5] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
+                            this.vertices.Add(Hexledata.vert[0] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[1] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[2] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[3] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[4] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[5] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
 
 
-                            vertices.Add(Hexledata.vert[6] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[7] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[8] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[9] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[10] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
-                            vertices.Add(Hexledata.vert[11] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f));
+                            this.vertices.Add(Hexledata.vert[6] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[7] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[8] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[9] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[10] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[11] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
 
                         }
                         else
                         {
 
-                            vertices.Add(Hexledata.vert[0] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[1] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[2] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[3] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[4] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[5] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
+                            this.vertices.Add(Hexledata.vert[0] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[1] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[2] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[3] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[4] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[5] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
 
 
-                            vertices.Add(Hexledata.vert[6] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[7] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[8] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[9] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[10] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
-                            vertices.Add(Hexledata.vert[11] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f));
+                            this.vertices.Add(Hexledata.vert[6] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[7] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[8] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[9] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[10] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
+                            this.vertices.Add(Hexledata.vert[11] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
 
                         }
 
@@ -139,22 +154,22 @@ public class Chunk : MonoBehaviour
             {
                 for (int K = 0; K < CHUNK_SIZE.y; K++)
                 {
-                    if (this.chunkData != null)
+                    if (this.chunkData[I, J, K] != null)
                     {
 
-                        uv.Add(Hexledata.uv[0]);
-                        uv.Add(Hexledata.uv[1]);
-                        uv.Add(Hexledata.uv[2]);
-                        uv.Add(Hexledata.uv[3]);
-                        uv.Add(Hexledata.uv[4]);
-                        uv.Add(Hexledata.uv[5]);
+                        this.uv.Add(Hexledata.uv[0]);
+                        this.uv.Add(Hexledata.uv[1]);
+                        this.uv.Add(Hexledata.uv[2]);
+                        this.uv.Add(Hexledata.uv[3]);
+                        this.uv.Add(Hexledata.uv[4]);
+                        this.uv.Add(Hexledata.uv[5]);
 
-                        uv.Add(Hexledata.uv[6]);
-                        uv.Add(Hexledata.uv[7]);
-                        uv.Add(Hexledata.uv[8]);
-                        uv.Add(Hexledata.uv[9]);
-                        uv.Add(Hexledata.uv[10]);
-                        uv.Add(Hexledata.uv[11]);
+                        this.uv.Add(Hexledata.uv[6]);
+                        this.uv.Add(Hexledata.uv[7]);
+                        this.uv.Add(Hexledata.uv[8]);
+                        this.uv.Add(Hexledata.uv[9]);
+                        this.uv.Add(Hexledata.uv[10]);
+                        this.uv.Add(Hexledata.uv[11]);
 
                     }
                 }
@@ -174,105 +189,105 @@ public class Chunk : MonoBehaviour
                 for (int K = 0; K < CHUNK_SIZE.y; K++)
                 {
 
-                    if (this.chunkData != null)
+                    if (this.chunkData[I, J, K] != null)
                     {
 
-                        if (testside(new Vector3Int(I, J, K), 0))
+                        if (TestSideOne(new Vector3Int(I, J, K)))
                         {
-                            tris.Add(0 + tricount);
-                            tris.Add(1 + tricount);
-                            tris.Add(3 + tricount);
-                            tris.Add(0 + tricount);
-                            tris.Add(3 + tricount);
-                            tris.Add(4 + tricount);
-                            tris.Add(1 + tricount);
-                            tris.Add(2 + tricount);
-                            tris.Add(3 + tricount);
-                            tris.Add(0 + tricount);
-                            tris.Add(4 + tricount);
-                            tris.Add(5 + tricount);
+                            this.tris.Add(0 + tricount);
+                            this.tris.Add(1 + tricount);
+                            this.tris.Add(3 + tricount);
+                            this.tris.Add(0 + tricount);
+                            this.tris.Add(3 + tricount);
+                            this.tris.Add(4 + tricount);
+                            this.tris.Add(1 + tricount);
+                            this.tris.Add(2 + tricount);
+                            this.tris.Add(3 + tricount);
+                            this.tris.Add(0 + tricount);
+                            this.tris.Add(4 + tricount);
+                            this.tris.Add(5 + tricount);
                         }
 
 
-                        if (testside(new Vector3Int(I, J, K), 1))
+                        if (TestSideTwo(new Vector3Int(I, J, K)))
                         {
-                            tris.Add(4 + tricount);
-                            tris.Add(3 + tricount);
-                            tris.Add(9 + tricount);
-                            tris.Add(10 + tricount);
-                            tris.Add(4 + tricount);
-                            tris.Add(9 + tricount);
+                            this.tris.Add(4 + tricount);
+                            this.tris.Add(3 + tricount);
+                            this.tris.Add(9 + tricount);
+                            this.tris.Add(10 + tricount);
+                            this.tris.Add(4 + tricount);
+                            this.tris.Add(9 + tricount);
                         }
 
-                        if (testside(new Vector3Int(I, J, K), 2))
+                        if (TestSideThree(new Vector3Int(I, J, K)))
                         {
-                            tris.Add(3 + tricount);
-                            tris.Add(2 + tricount);
-                            tris.Add(8 + tricount);
-                            tris.Add(9 + tricount);
-                            tris.Add(3 + tricount);
-                            tris.Add(8 + tricount);
-                        }
-
-
-                        if (testside(new Vector3Int(I, J, K), 3))
-                        {
-                            tris.Add(2 + tricount);
-                            tris.Add(1 + tricount);
-                            tris.Add(7 + tricount);
-                            tris.Add(8 + tricount);
-                            tris.Add(2 + tricount);
-                            tris.Add(7 + tricount);
-                        }
-
-                        if (testside(new Vector3Int(I, J, K), 4))
-                        {
-
-                            tris.Add(1 + tricount);
-                            tris.Add(0 + tricount);
-                            tris.Add(6 + tricount);
-                            tris.Add(7 + tricount);
-                            tris.Add(1 + tricount);
-                            tris.Add(6 + tricount);
-
-                        }
-
-                        if (testside(new Vector3Int(I, J, K), 5))
-                        {
-                            tris.Add(0 + tricount);
-                            tris.Add(5 + tricount);
-                            tris.Add(11 + tricount);
-                            tris.Add(6 + tricount);
-                            tris.Add(0 + tricount);
-                            tris.Add(11 + tricount);
+                            this.tris.Add(3 + tricount);
+                            this.tris.Add(2 + tricount);
+                            this.tris.Add(8 + tricount);
+                            this.tris.Add(9 + tricount);
+                            this.tris.Add(3 + tricount);
+                            this.tris.Add(8 + tricount);
                         }
 
 
-                        if (testside(new Vector3Int(I, J, K), 6))
+                        if (TestSideFour(new Vector3Int(I, J, K)))
                         {
-                            tris.Add(5 + tricount);
-                            tris.Add(4 + tricount);
-                            tris.Add(10 + tricount);
-                            tris.Add(11 + tricount);
-                            tris.Add(5 + tricount);
-                            tris.Add(10 + tricount);
+                            this.tris.Add(2 + tricount);
+                            this.tris.Add(1 + tricount);
+                            this.tris.Add(7 + tricount);
+                            this.tris.Add(8 + tricount);
+                            this.tris.Add(2 + tricount);
+                            this.tris.Add(7 + tricount);
+                        }
+
+                        if (TestSideFive(new Vector3Int(I, J, K)))
+                        {
+
+                            this.tris.Add(1 + tricount);
+                            this.tris.Add(0 + tricount);
+                            this.tris.Add(6 + tricount);
+                            this.tris.Add(7 + tricount);
+                            this.tris.Add(1 + tricount);
+                            this.tris.Add(6 + tricount);
+
+                        }
+
+                        if (TestSideSix(new Vector3Int(I, J, K)))
+                        {
+                            this.tris.Add(0 + tricount);
+                            this.tris.Add(5 + tricount);
+                            this.tris.Add(11 + tricount);
+                            this.tris.Add(6 + tricount);
+                            this.tris.Add(0 + tricount);
+                            this.tris.Add(11 + tricount);
                         }
 
 
-                        if (testside(new Vector3Int(I, J, K), 7))
+                        if (TestSideSeven(new Vector3Int(I, J, K)))
                         {
-                            tris.Add(9 + tricount);
-                            tris.Add(7 + tricount);
-                            tris.Add(6 + tricount);
-                            tris.Add(9 + tricount);
-                            tris.Add(6 + tricount);
-                            tris.Add(10 + tricount);
-                            tris.Add(8 + tricount);
-                            tris.Add(7 + tricount);
-                            tris.Add(9 + tricount);
-                            tris.Add(6 + tricount);
-                            tris.Add(11 + tricount);
-                            tris.Add(10 + tricount);
+                            this.tris.Add(5 + tricount);
+                            this.tris.Add(4 + tricount);
+                            this.tris.Add(10 + tricount);
+                            this.tris.Add(11 + tricount);
+                            this.tris.Add(5 + tricount);
+                            this.tris.Add(10 + tricount);
+                        }
+
+
+                        if (TestSideEight(new Vector3Int(I, J, K)))
+                        {
+                            this.tris.Add(9 + tricount);
+                            this.tris.Add(7 + tricount);
+                            this.tris.Add(6 + tricount);
+                            this.tris.Add(9 + tricount);
+                            this.tris.Add(6 + tricount);
+                            this.tris.Add(10 + tricount);
+                            this.tris.Add(8 + tricount);
+                            this.tris.Add(7 + tricount);
+                            this.tris.Add(9 + tricount);
+                            this.tris.Add(6 + tricount);
+                            this.tris.Add(11 + tricount);
+                            this.tris.Add(10 + tricount);
                         }
 
                         tricount += 12;
@@ -284,349 +299,266 @@ public class Chunk : MonoBehaviour
     }
 
 
-
-    public bool testside(Vector3Int position, int side)
+    public bool TestSideOne(Vector3Int position)
     {
-        //done
-        if(side == 0)
+       // return true;
+
+        if (position.y + 1 >= CHUNK_SIZE.y)
         {
-            if(position.y + 1 >= CHUNK_SIZE.y)
-            {
-                Debug.Log("edge hex");
-                return true;
+            Debug.Log("edge hex");
+            return true;
 
-            }
-            else
-            if (chunkData[position.x, position.y + 1, position.z] == null)
-            {
-                Debug.Log("bruh");
-                return true;
-
-            }
-            else
-            {
-                Debug.Log("wh?");
-                return false;
-            }
+        }
+        else
+        if (chunkData[position.x, position.y + 1, position.z] == null)
+        {
+            Debug.Log("bruh");
+            return true;
 
         }
 
-        //done
-        if (side == 1)
-        {
-          //  return false;
+            return false;
 
-            if (position.z - 1 < 0)
-            {
-                Debug.Log("edge hex");
-                return true;
-
-            }
-            else
-              if (chunkData[position.x, position.y, position.z - 1] == null)
-            {
-                Debug.Log("bruh");
-                return true;
-
-            }
-            else
-            {
-                Debug.Log("wh?");
-                return false;
-            }
-
-        }
-
-        //done
-        if(side == 5)
-        {
-           // return false;
-
-            if (position.x % 2 == 0)
-            {
-                if (position.x - 1 < 0)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x - 1, position.y, position.z] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }   
-            }
-            else
-            {
-                if (position.x - 1 < 0 || position.z + 1 >= CHUNK_SIZE.x)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x - 1, position.y, position.z + 1] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-
-            }
-
-        }
-
-        //done
-        if (side == 6)
-        {
-          //  return false;
-
-            if (position.x % 2 == 0)
-            {
-                if (position.x - 1 < 0 || position.z - 1 < 0)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x - 1, position.y, position.z - 1] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-            }
-            else
-            {
-                if (position.x - 1 < 0)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x - 1, position.y, position.z] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-
-            }
-
-        }
-
-
-
-        //done
-        if (side == 4)
-        {
-           // return true;
-
-            if (position.x % 2 == 0)
-            {
-                if ( position.z + 1 >= CHUNK_SIZE.x)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x, position.y, position.z + 1] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-            }
-            else
-            {
-                if (position.z + 1 >= CHUNK_SIZE.x)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x , position.y, position.z + 1] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-
-            }
-        }
-
-        //done
-        if (side == 2)
-        {
-            //  return false;
-
-
-            if (position.x % 2 == 0)
-            {
-                if (position.x + 1 >= CHUNK_SIZE.x || position.z - 1 < 0)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x + 1, position.y, position.z - 1] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-            }
-            else
-            {
-                if (position.x + 1 >= CHUNK_SIZE.x)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x + 1, position.y, position.z] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-
-
-
-            }
-
-        }
-
-        if (side == 3)
-        {
-           // return true;
-
-            if (position.x % 2 == 0)
-            {
-                if (position.x + 1 >= CHUNK_SIZE.x)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x + 1, position.y, position.z] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-            }
-            else
-            {
-                if (position.x + 1 >= CHUNK_SIZE.x || position.z + 1 >= CHUNK_SIZE.x)
-                {
-                    Debug.Log("edge hex");
-                    return true;
-
-                }
-                else
-                if (chunkData[position.x + 1, position.y, position.z + 1] == null)
-                {
-                    Debug.Log("bruh");
-                    return true;
-
-                }
-                else
-                {
-                    Debug.Log("wh?");
-                    return false;
-                }
-
-
-
-            }
-
-
-        }
-
-
-        //done
-        if (side == 7)
-        {
-            if (position.y - 1 < 0)
-            {
-
-                return true;
-
-            }
-            else
-            if (chunkData[position.x, position.y - 1, position.z] == null)
-            {
-
-                return true;
-
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-
-
-        return false;
     }
 
+    public bool TestSideTwo(Vector3Int position)
+    {
+       // return false;
 
+        if (position.z - 1 < 0)
+        {
+            Debug.Log("edge hex");
+            return true;
+
+        }
+        else
+        if (chunkData[position.x, position.y, position.z - 1] == null)
+        {
+            Debug.Log("bruh");
+            return true;
+
+        }
+
+            return false;
+      
+    }
+
+    public bool TestSideThree(Vector3Int position)
+    {
+       // return false;
+
+        if (position.x % 2 == 0)
+        {
+            if (position.x + 1 >= CHUNK_SIZE.x || position.z - 1 < 0)
+            {
+        
+                return true;
+
+            }
+            else
+            if (chunkData[position.x + 1, position.y, position.z - 1] == null)
+            {
+
+                return true;
+
+            }
+
+        }
+        else
+        {
+            if (position.x + 1 >= CHUNK_SIZE.x)
+            {
+
+                return true;
+
+            }
+            else
+            if (chunkData[position.x + 1, position.y, position.z] == null)
+            {
+
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    public bool TestSideFour(Vector3Int position)
+    {
+       // return false;
+
+        if (position.x % 2 == 0)
+        {
+            if (position.x + 1 >= CHUNK_SIZE.x)
+            {
+                Debug.Log("edge hex");
+                return false;
+
+            }
+            else
+            if (chunkData[position.x + 1, position.y, position.z] == null)
+            {
+                Debug.Log("bruh");
+                return true;
+
+            }
+
+        }
+        else
+        {
+            if (position.x + 1 >= CHUNK_SIZE.x || position.z + 1 >= CHUNK_SIZE.x)
+            {
+                Debug.Log("edge hex");
+                return false;
+
+            }
+            else
+            if (chunkData[position.x + 1, position.y, position.z + 1] == null)
+            {
+                Debug.Log("bruh");
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    public bool TestSideFive(Vector3Int position)
+    {
+       // return false;
+
+        if (position.z + 1 >= CHUNK_SIZE.x)
+        {
+            Debug.Log("edge hex");
+            return true;
+
+        }
+        else
+        if (chunkData[position.x, position.y, position.z + 1] == null)
+        {
+            Debug.Log("bruh");
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    public bool TestSideSix(Vector3Int position)
+    {
+       // return false;
+
+        if (position.x % 2 == 0)
+        {
+            if (position.x - 1 < 0)
+            {
+                Debug.Log("edge hex");
+                return false;
+
+            }
+            else
+            if (chunkData[position.x - 1, position.y, position.z] == null)
+            {
+                Debug.Log("bruh");
+                return true;
+
+            }
+
+        }
+        else
+        {
+            if (position.x - 1 < 0 || position.z + 1 >= CHUNK_SIZE.x)
+            {
+                Debug.Log("edge hex");
+                return false;
+
+            }
+            else
+            if (chunkData[position.x - 1, position.y, position.z + 1] == null)
+            {
+                Debug.Log("bruh");
+                return true;
+
+            }
+
+
+        }
+
+        return false;
+
+    }
+
+    public bool TestSideSeven(Vector3Int position)
+    {
+       // return false;
+
+        if (position.x % 2 == 0)
+        {
+            if (position.x - 1 < 0 || position.z - 1 < 0)
+            {
+                Debug.Log("edge hex");
+                return false;
+
+            }
+            else
+            if (chunkData[position.x - 1, position.y, position.z - 1] == null)
+            {
+                Debug.Log("bruh");
+                return true;
+
+            }
+
+        }
+        else
+        {
+            if (position.x - 1 < 0)
+            {
+                Debug.Log("edge hex");
+                return false;
+
+            }
+            else
+            if (chunkData[position.x - 1, position.y, position.z] == null)
+            {
+                Debug.Log("bruh");
+                return true;
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    public bool TestSideEight(Vector3Int position)
+    {
+       // return false;
+
+        if (position.y - 1 < 0)
+        {
+
+            return true;
+
+        }
+        else
+        if (chunkData[position.x, position.y - 1, position.z] == null)
+        {
+
+            return true;
+
+        }
+
+            return false;
+        
+    }
 
 
 
@@ -646,9 +578,9 @@ public class Chunk : MonoBehaviour
 
 
 
-        meshFilter.mesh = mesh;
+        this.gameObject.GetComponent<MeshFilter>().mesh = mesh;
 
-        meshRenderer.material = material;
+        this.gameObject.GetComponent<MeshRenderer>().material = this.material;
 
 
     }
