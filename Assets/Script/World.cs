@@ -14,7 +14,7 @@ public class World : MonoBehaviour
 
     public int renderSize;
 
-    public Vector3Int ok;
+    public GameObject ok;
 
     void Start()
     {
@@ -31,13 +31,9 @@ public class World : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.Space))
         {
 
-            PlayerLoad(ok);
+            PlayerLoad(PlayerToChunk(ok.transform.position));
            
-
         }
-
-        
-
 
     }
 
@@ -58,6 +54,11 @@ public class World : MonoBehaviour
         }
     }
 
+
+
+
+
+
     public int ClampWorldX(int number)
     {
 
@@ -71,6 +72,14 @@ public class World : MonoBehaviour
         return Mathf.Clamp(number, 0, WORLD_SIZE.y - 1);
 
     }
+
+    public Vector3Int PlayerToChunk(Vector3 PlayerPos)
+    {
+
+        return new Vector3Int((int)(PlayerPos.x / 32 / 0.75), (int)(PlayerPos.y / 32 / 0.75), (int)(PlayerPos.z / 32 / 0.88));
+
+    }
+
 
 
     public void PlayerLoad(Vector3Int chunkPosition)
@@ -100,16 +109,23 @@ public class World : MonoBehaviour
             }
         }
 
-
-
     }
 
 
+    public Vector3Int ChunkBlockToWorld(Vector3Int chunk, Vector3Int block)
+    {
 
+        return (chunk * 32 + block);
 
+    }
 
+    public Vector3Int[] WorldToChunkBlock(Vector3Int world)
+    {
+        Vector3Int chunk = new Vector3Int(world.x / 32, world.y / 32, world.z / 32);
 
+        Vector3Int block = new Vector3Int(world.x % 32, world.y % 32, world.z % 32);
 
-
+        return new Vector3Int[] {chunk, block};
+    }
 
 }

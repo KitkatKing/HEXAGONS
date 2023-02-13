@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Hexagon
 {
-    private int hi;
+    private bool isBlock;
+
+    private int BlockId;
 
 
     public Hexagon()
     {
 
-        this.hi = 1;
+       
 
     }
 
