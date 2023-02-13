@@ -7,7 +7,7 @@ public class Chunk : MonoBehaviour
  
     private Vector3Int CHUNK_SIZE = new Vector3Int(32, 32, 32);
 
-    private Vector3Int chunkPosition;
+    public Vector3Int chunkPosition;
     private Vector3 globalPosition;
 
     public Hexagon[,,] chunkData;
@@ -36,7 +36,7 @@ public class Chunk : MonoBehaviour
 
         this.chunkPosition = chunkPosition;
 
-        this.globalPosition = new Vector3(chunkPosition.x * 32 * 0.75f, chunkPosition.y * 32 * 0.75f, chunkPosition.z * 32 * 0.94f);
+        this.globalPosition = new Vector3(chunkPosition.x * 32 * 0.75f, chunkPosition.y * 32 * 0.75f, chunkPosition.z * 32 * 0.88f);
 
         this.chunkData = new Hexagon[CHUNK_SIZE.x, CHUNK_SIZE.y, CHUNK_SIZE.z];
 
@@ -44,6 +44,11 @@ public class Chunk : MonoBehaviour
 
         this.material = material;
 
+
+    }
+
+    public void DoShit()
+    {
         CreateAllHex();
         //CreateOneHex(new Vector3Int(16,16,16));
         EstablishChunkVertices();
@@ -305,14 +310,14 @@ public class Chunk : MonoBehaviour
 
         if (position.y + 1 >= CHUNK_SIZE.y)
         {
-            Debug.Log("edge hex1");
+           // Debug.Log("edge hex1");
             return true;
 
         }
         else
         if (chunkData[position.x, position.y + 1, position.z] == null)
         {
-            Debug.Log("bruh1");
+          //  Debug.Log("bruh1");
             return true;
 
         }
@@ -327,14 +332,14 @@ public class Chunk : MonoBehaviour
 
         if (position.z - 1 < 0)
         {
-            Debug.Log("edge hex2");
+           // Debug.Log("edge hex2");
             return true;
 
         }
         else
         if (chunkData[position.x, position.y, position.z - 1] == null)
         {
-            Debug.Log("bruh2");
+           // Debug.Log("bruh2");
             return true;
 
         }
@@ -394,14 +399,14 @@ public class Chunk : MonoBehaviour
         {
             if (position.x + 1 >= CHUNK_SIZE.x)
             {
-                Debug.Log("edge hex4");
+               // Debug.Log("edge hex4");
                 return true;
 
             }
             else
             if (chunkData[position.x + 1, position.y, position.z] == null)
             {
-                Debug.Log("bruh4");
+               // Debug.Log("bruh4");
                 return true;
 
             }
@@ -411,14 +416,14 @@ public class Chunk : MonoBehaviour
         {
             if (position.x + 1 >= CHUNK_SIZE.x || position.z + 1 >= CHUNK_SIZE.x)
             {
-                Debug.Log("edge hex4");
+                //Debug.Log("edge hex4");
                 return true;
 
             }
             else
             if (chunkData[position.x + 1, position.y, position.z + 1] == null)
             {
-                Debug.Log("bruh4");
+               // Debug.Log("bruh4");
                 return true;
 
             }
@@ -435,14 +440,14 @@ public class Chunk : MonoBehaviour
 
         if (position.z + 1 >= CHUNK_SIZE.x)
         {
-            Debug.Log("edge hex5");
+            //Debug.Log("edge hex5");
             return true;
 
         }
         else
         if (chunkData[position.x, position.y, position.z + 1] == null)
         {
-            Debug.Log("bruh");
+            //Debug.Log("bruh");
             return true;
 
         }
@@ -459,14 +464,14 @@ public class Chunk : MonoBehaviour
         {
             if (position.x - 1 < 0)
             {
-                Debug.Log("edge hex");
+                //Debug.Log("edge hex");
                 return true;
 
             }
             else
             if (chunkData[position.x - 1, position.y, position.z] == null)
             {
-                Debug.Log("bruh");
+                //Debug.Log("bruh");
                 return true;
 
             }
@@ -476,14 +481,14 @@ public class Chunk : MonoBehaviour
         {
             if (position.x - 1 < 0 || position.z + 1 >= CHUNK_SIZE.x)
             {
-                Debug.Log("edge hex");
+                //Debug.Log("edge hex");
                 return true;
 
             }
             else
             if (chunkData[position.x - 1, position.y, position.z + 1] == null)
             {
-                Debug.Log("bruh");
+                //Debug.Log("bruh");
                 return true;
 
             }
@@ -503,14 +508,14 @@ public class Chunk : MonoBehaviour
         {
             if (position.x - 1 < 0 || position.z - 1 < 0)
             {
-                Debug.Log("edge hex");
+                //Debug.Log("edge hex");
                 return true;
 
             }
             else
             if (chunkData[position.x - 1, position.y, position.z - 1] == null)
             {
-                Debug.Log("bruh");
+                //Debug.Log("bruh");
                 return true;
 
             }
@@ -520,14 +525,14 @@ public class Chunk : MonoBehaviour
         {
             if (position.x - 1 < 0)
             {
-                Debug.Log("edge hex");
+                //Debug.Log("edge hex");
                 return true;
 
             }
             else
             if (chunkData[position.x - 1, position.y, position.z] == null)
             {
-                Debug.Log("bruh");
+                //Debug.Log("bruh");
                 return true;
 
             }
