@@ -17,8 +17,11 @@ public class Hexledata : MonoBehaviour
     {
         new Vector2(0.125f, 0.5f), new Vector2(0.375f, 0.5f), new Vector2( 0.5f, 0.25f),
          new Vector2(0.375f , 0), new Vector2(0.125f , 0), new Vector2(0, 0.25f),
+
           new Vector2(0.625f, 1f), new Vector2(0.875f, 1f), new Vector2( 1f, 0.75f),
          new Vector2(0.875f , 0.5f), new Vector2(0.625f , 0.5f), new Vector2(0.5f, 0.75f)
+
+
     };
 
 
