@@ -49,12 +49,17 @@ public class Chunk : MonoBehaviour
 
     public void DoShit()
     {
-        CreateAllHex();
+        if(chunkPosition.y < 3)
+        {
+            CreateAllHex();
+        }
+
         //CreateOneHex(new Vector3Int(16,16,16));
         EstablishChunkVertices();
         EstablishChunkuvs();
         EstablishChunktris();
         MakeMesh();
+
     }
 
 
@@ -587,8 +592,26 @@ public class Chunk : MonoBehaviour
 
         this.gameObject.GetComponent<MeshRenderer>().material = this.material;
 
+        ColliderCreate();
+
 
     }
+
+    public void ColliderCreate()
+    {
+
+        Destroy(this.gameObject.GetComponent<MeshCollider>());
+
+        this.gameObject.AddComponent<MeshCollider>();
+
+    }
+
+    //Deletes the previous collider WITHOUT making a new one
+    public void ColliderRemove()
+    {
+        Destroy(this.gameObject.GetComponent<MeshCollider>());
+    }
+
 
 
 }
