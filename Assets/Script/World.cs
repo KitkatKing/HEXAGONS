@@ -18,6 +18,7 @@ public class World : MonoBehaviour
 
     void Start()
     {
+        Logger.Log("world loaded");
         world = new Chunk[WORLD_SIZE.x, WORLD_SIZE.y, WORLD_SIZE.x];
 
         bruh();
@@ -33,6 +34,9 @@ public class World : MonoBehaviour
 
             PlayerLoad(PlayerToChunk(ok.transform.position));
            
+        }
+        if (Input.GetKeyDown(KeyCode.A)) {
+          GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
         }
 
     }

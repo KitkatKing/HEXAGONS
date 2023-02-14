@@ -51,13 +51,14 @@ public class Chunk : MonoBehaviour
     {
         if(chunkPosition.y < 3)
         {
+            Logger.Log("did something");
             CreateAllHex();
         }
 
         //CreateOneHex(new Vector3Int(16,16,16));
         EstablishChunkVertices();
         EstablishChunkuvs();
-        EstablishChunktris();
+        generate_tris();
         MakeMesh();
 
     }
@@ -96,7 +97,8 @@ public class Chunk : MonoBehaviour
 
 
 
-
+    // adds vertices for each hexagon in the chunk to the list of vertices
+    // NOTE: DO NOT CALL SUCCESSIVELY WITHOUT CLEARING VERTICES
     public void EstablishChunkVertices()
     {
         for (int I = 0; I < CHUNK_SIZE.x; I++)
@@ -156,6 +158,8 @@ public class Chunk : MonoBehaviour
 
 
 
+    // like the version for vertices, but generates the proper uvs for each of them
+    // NOTE: ALSO DO NOT CALL THIS TWICE SUCCESSIVELY WITHOUT CLEARING UVS
     public void EstablishChunkuvs()
     {
         for (int I = 0; I < CHUNK_SIZE.x; I++)
@@ -188,388 +192,182 @@ public class Chunk : MonoBehaviour
     }
 
 
-    public void EstablishChunktris()
-    {
-        int tricount = 0;
+    private void generate_tris() {
+      // each hexagon is aligned to 12 vertices, and will be
+      // incremented each iteration by said amount to ensure
+      // the correct vertices are used.
+      int tc = 0;
 
-        for (int I = 0; I < CHUNK_SIZE.x; I++)
-        {
-            for (int J = 0; J < CHUNK_SIZE.y; J++)
-            {
-                for (int K = 0; K < CHUNK_SIZE.y; K++)
-                {
+      for (int x = 0; x < CHUNK_SIZE.x; x++) {
+        for (int y = 0; y < CHUNK_SIZE.y; y++) {
+          for (int z = 0; z < CHUNK_SIZE.z; z++) {
+            if (chunkData[x, y, z] != null) {
+              if (does_hex_y_plus_exist(x, y, z)) {
+                generate_y_plus_tris(tc);
+              }
+              if (does_hex_y_minus_exist(x, y, z)) {
+                generate_y_minus_tris(tc);
+              }
+              if (does_hex_z_plus_exist(x, y, z)) {
+                generate_z_plus_tris(tc);
+              }
+              if (does_hex_z_minus_exist(x, y, z)) {
+                generate_z_minus_tris(tc);
+              }
 
-                    if (this.chunkData[I, J, K] != null)
-                    {
-
-                        if (TestSideOne(new Vector3Int(I, J, K)))
-                        {
-                            this.tris.Add(0 + tricount);
-                            this.tris.Add(1 + tricount);
-                            this.tris.Add(3 + tricount);
-                            this.tris.Add(0 + tricount);
-                            this.tris.Add(3 + tricount);
-                            this.tris.Add(4 + tricount);
-                            this.tris.Add(1 + tricount);
-                            this.tris.Add(2 + tricount);
-                            this.tris.Add(3 + tricount);
-                            this.tris.Add(0 + tricount);
-                            this.tris.Add(4 + tricount);
-                            this.tris.Add(5 + tricount);
-                        }
-
-
-                        if (TestSideTwo(new Vector3Int(I, J, K)))
-                        {
-                            this.tris.Add(4 + tricount);
-                            this.tris.Add(3 + tricount);
-                            this.tris.Add(9 + tricount);
-                            this.tris.Add(10 + tricount);
-                            this.tris.Add(4 + tricount);
-                            this.tris.Add(9 + tricount);
-                        }
-
-                        if (TestSideThree(new Vector3Int(I, J, K)))
-                        {
-                            this.tris.Add(3 + tricount);
-                            this.tris.Add(2 + tricount);
-                            this.tris.Add(8 + tricount);
-                            this.tris.Add(9 + tricount);
-                            this.tris.Add(3 + tricount);
-                            this.tris.Add(8 + tricount);
-                        }
-
-
-                        if (TestSideFour(new Vector3Int(I, J, K)))
-                        {
-                            this.tris.Add(2 + tricount);
-                            this.tris.Add(1 + tricount);
-                            this.tris.Add(7 + tricount);
-                            this.tris.Add(8 + tricount);
-                            this.tris.Add(2 + tricount);
-                            this.tris.Add(7 + tricount);
-                        }
-
-                        if (TestSideFive(new Vector3Int(I, J, K)))
-                        {
-
-                            this.tris.Add(1 + tricount);
-                            this.tris.Add(0 + tricount);
-                            this.tris.Add(6 + tricount);
-                            this.tris.Add(7 + tricount);
-                            this.tris.Add(1 + tricount);
-                            this.tris.Add(6 + tricount);
-
-                        }
-
-                        if (TestSideSix(new Vector3Int(I, J, K)))
-                        {
-                            this.tris.Add(0 + tricount);
-                            this.tris.Add(5 + tricount);
-                            this.tris.Add(11 + tricount);
-                            this.tris.Add(6 + tricount);
-                            this.tris.Add(0 + tricount);
-                            this.tris.Add(11 + tricount);
-                        }
-
-
-                        if (TestSideSeven(new Vector3Int(I, J, K)))
-                        {
-                            this.tris.Add(5 + tricount);
-                            this.tris.Add(4 + tricount);
-                            this.tris.Add(10 + tricount);
-                            this.tris.Add(11 + tricount);
-                            this.tris.Add(5 + tricount);
-                            this.tris.Add(10 + tricount);
-                        }
-
-
-                        if (TestSideEight(new Vector3Int(I, J, K)))
-                        {
-                            this.tris.Add(9 + tricount);
-                            this.tris.Add(7 + tricount);
-                            this.tris.Add(6 + tricount);
-                            this.tris.Add(9 + tricount);
-                            this.tris.Add(6 + tricount);
-                            this.tris.Add(10 + tricount);
-                            this.tris.Add(8 + tricount);
-                            this.tris.Add(7 + tricount);
-                            this.tris.Add(9 + tricount);
-                            this.tris.Add(6 + tricount);
-                            this.tris.Add(11 + tricount);
-                            this.tris.Add(10 + tricount);
-                        }
-
-                        tricount += 12;
-
-                    }
+              int test = (x % 2);
+              if (test == 0) {
+                if (does_hex_x_plus_z_plus_exist(x, y, z)) {
+                  generate_x_plus_z_plus_tris(tc);
                 }
+              } else if (test == 1) {
+                if (does_hex_x_plus_z_plus_exist(x, y, z + 1)) {
+                  generate_x_plus_z_plus_tris(tc);
+                }
+              } else {
+                Logger.LogErrorFormat("x % 2 somehow didn't return either 0 or 1 in generate_tris(): {0}", test);
+              }
+
+              // neat trick that works because:
+              // A: the value of "x % 2" will always be either 0 or 1, and
+              // B: if it's 0 the z value is left alone, otherwise we add 1 to it.
+              // this did require adding a check within the generate_x_*_tris functions however
+              // to ensure the z value doesn't go out of bounds.
+              if (does_hex_x_minus_z_plus_exist(x, y, z + (x % 2))) {
+                generate_x_minus_z_plus_tris(tc);
+              }
+              // necessary to subtract 1 from "x % 2" so 0 -> -1 and 1 -> 0
+              // effectively reversing the condition's effect in addition to
+              // subtracting from the z coordinate.
+              if (does_hex_x_plus_z_minus_exist(x, y, z + (x % 2) - 1)) {
+                generate_x_plus_z_minus_tris(tc);
+              }
+              if (does_hex_x_minus_z_minus_exist(x, y, z + (x % 2) - 1)) {
+                generate_x_minus_z_minus_tris(tc);
+              }
+
+              tc += 12;
             }
+          }
         }
+      }
     }
 
+    // +==================+
+    // | DOES_HEX_*_EXIST |
+    // +==================+
 
-    public bool TestSideOne(Vector3Int position)
-    {
-       // return true;
-
-        if (position.y + 1 >= CHUNK_SIZE.y)
-        {
-           // Debug.Log("edge hex1");
-            return true;
-
-        }
-        else
-        if (chunkData[position.x, position.y + 1, position.z] == null)
-        {
-          //  Debug.Log("bruh1");
-            return true;
-
-        }
-
-            return false;
-
-    }
-
-    public bool TestSideTwo(Vector3Int position)
-    {
-       // return false;
-
-        if (position.z - 1 < 0)
-        {
-           // Debug.Log("edge hex2");
-            return true;
-
-        }
-        else
-        if (chunkData[position.x, position.y, position.z - 1] == null)
-        {
-           // Debug.Log("bruh2");
-            return true;
-
-        }
-
-            return false;
-      
-    }
-
-    public bool TestSideThree(Vector3Int position)
-    {
-       // return false;
-
-        if (position.x % 2 == 0)
-        {
-            if (position.x + 1 >= CHUNK_SIZE.x || position.z - 1 < 0)
-            {
-        
-                return true;
-
-            }
-            else
-            if (chunkData[position.x + 1, position.y, position.z - 1] == null)
-            {
-
-                return true;
-
-            }
-
-        }
-        else
-        {
-            if (position.x + 1 >= CHUNK_SIZE.x)
-            {
-
-                return true;
-
-            }
-            else
-            if (chunkData[position.x + 1, position.y, position.z] == null)
-            {
-
-                return true;
-
-            }
-
-        }
-
+    // reason for using 3 integers rather than a vector is nothing
+    // specific to vectors is in this function or returned by it
+    private bool does_hex_y_plus_exist(int x, int y, int z) {
+      // double bars are necessary to avoid an IndexOutOfBounds exception by checking the left side first
+      if ((y + 1 >= CHUNK_SIZE.y) || (chunkData[x, y + 1, z] == null)) {
+        return true;
+      } else {
         return false;
+      }
+    }
+    private bool does_hex_y_minus_exist(int x, int y, int z) {
+      // further reduction of the previous because:
+      // "if condition { return true; } else { return false; }" == "return condition"
 
+      // note the double bars "||" are necessary because it evaluates the
+      // right condition only if the left condition evaluates to false,
+      // compared to single bar "|" which checks both.
+      return ((y <= 0) ||
+              (chunkData[x, y - 1, z] == null));
     }
 
-    public bool TestSideFour(Vector3Int position)
-    {
-       // return false;
-
-        if (position.x % 2 == 0)
-        {
-            if (position.x + 1 >= CHUNK_SIZE.x)
-            {
-               // Debug.Log("edge hex4");
-                return true;
-
-            }
-            else
-            if (chunkData[position.x + 1, position.y, position.z] == null)
-            {
-               // Debug.Log("bruh4");
-                return true;
-
-            }
-
-        }
-        else
-        {
-            if (position.x + 1 >= CHUNK_SIZE.x || position.z + 1 >= CHUNK_SIZE.x)
-            {
-                //Debug.Log("edge hex4");
-                return true;
-
-            }
-            else
-            if (chunkData[position.x + 1, position.y, position.z + 1] == null)
-            {
-               // Debug.Log("bruh4");
-                return true;
-
-            }
-
-        }
-
-        return false;
-
+    private bool does_hex_z_plus_exist(int x, int y, int z) {
+      return ((z + 1 >= CHUNK_SIZE.z) ||
+              (chunkData[x, y, z + 1] == null));
+    }
+    private bool does_hex_z_minus_exist(int x, int y, int z) {
+      return ((z <= 0) ||
+              (chunkData[x, y, z - 1] == null));
     }
 
-    public bool TestSideFive(Vector3Int position)
-    {
-       // return false;
-
-        if (position.z + 1 >= CHUNK_SIZE.x)
-        {
-            //Debug.Log("edge hex5");
-            return true;
-
-        }
-        else
-        if (chunkData[position.x, position.y, position.z + 1] == null)
-        {
-            //Debug.Log("bruh");
-            return true;
-
-        }
-
-        return false;
-
+    private bool does_hex_x_plus_z_plus_exist(int x, int y, int z) {
+      return (((x + 1 >= CHUNK_SIZE.x) ||
+              // this check is necessary because we add to the value
+              // of z, depending on which x hexagon layer it is in,
+              // in the generate_tris function.
+               (z >= CHUNK_SIZE.z)) ||
+              (chunkData[x + 1, y, z] == null));
+    }
+    private bool does_hex_x_minus_z_plus_exist(int x, int y, int z) {
+      return (((x <= 0) ||
+               (z >= CHUNK_SIZE.z)) ||
+              (chunkData[x - 1, y, z] == null));
+    }
+    private bool does_hex_x_plus_z_minus_exist(int x, int y, int z) {
+      return (((x + 1 >= CHUNK_SIZE.x) ||
+               (z <= 0)) ||
+              (chunkData[x + 1, y, z] == null));
+    }
+    private bool does_hex_x_minus_z_minus_exist(int x, int y, int z) {
+      return (((x <= 0) ||
+               (z < 0)) ||
+              (chunkData[x - 1, y, z] == null));
     }
 
-    public bool TestSideSix(Vector3Int position)
-    {
-       // return false;
 
-        if (position.x % 2 == 0)
-        {
-            if (position.x - 1 < 0)
-            {
-                //Debug.Log("edge hex");
-                return true;
-
-            }
-            else
-            if (chunkData[position.x - 1, position.y, position.z] == null)
-            {
-                //Debug.Log("bruh");
-                return true;
-
-            }
-
-        }
-        else
-        {
-            if (position.x - 1 < 0 || position.z + 1 >= CHUNK_SIZE.x)
-            {
-                //Debug.Log("edge hex");
-                return true;
-
-            }
-            else
-            if (chunkData[position.x - 1, position.y, position.z + 1] == null)
-            {
-                //Debug.Log("bruh");
-                return true;
-
-            }
-
-
-        }
-
-        return false;
-
+    private void generate_y_plus_tris(int tc) { 
+      tris.Add(0 + tc);
+      tris.Add(1 + tc);
+      tris.Add(3 + tc);
+      tris.Add(0 + tc);
+      tris.Add(3 + tc);
+      tris.Add(4 + tc);
+      tris.Add(1 + tc);
+      tris.Add(2 + tc);
+      tris.Add(3 + tc);
+      tris.Add(0 + tc);
+      tris.Add(4 + tc);
+      tris.Add(5 + tc);
+    }
+    private void generate_y_minus_tris(int tc) { 
+      // practically equivalent to the above, minus the contents of the array,
+      // but shorter to write and change.
+      int[] tlist = {9, 7, 6,
+                     9, 6, 10,
+                     8, 7, 9,
+                     6, 11, 10};
+      foreach (int i in tlist) {
+        tris.Add(i + tc);
+      }
     }
 
-    public bool TestSideSeven(Vector3Int position)
-    {
-       // return false;
-
-        if (position.x % 2 == 0)
-        {
-            if (position.x - 1 < 0 || position.z - 1 < 0)
-            {
-                //Debug.Log("edge hex");
-                return true;
-
-            }
-            else
-            if (chunkData[position.x - 1, position.y, position.z - 1] == null)
-            {
-                //Debug.Log("bruh");
-                return true;
-
-            }
-
-        }
-        else
-        {
-            if (position.x - 1 < 0)
-            {
-                //Debug.Log("edge hex");
-                return true;
-
-            }
-            else
-            if (chunkData[position.x - 1, position.y, position.z] == null)
-            {
-                //Debug.Log("bruh");
-                return true;
-
-            }
-
-        }
-
-        return false;
-
+    private void add_tris(int i) {
+      tris.Add(i);
     }
-
-    public bool TestSideEight(Vector3Int position)
-    {
-       // return false;
-
-        if (position.y - 1 < 0)
-        {
-
-            return true;
-
-        }
-        else
-        if (chunkData[position.x, position.y - 1, position.z] == null)
-        {
-
-            return true;
-
-        }
-
-            return false;
-        
+    private void generate_z_plus_tris(int tc) {
+      // discovered how to declare anonymous arrays with predefined elements
+      foreach (int i in new int[] {1, 0, 6,
+                                   7, 1, 6}) {
+        add_tris(i + tc);
+      }
     }
-
+    private void generate_z_minus_tris(int tc) {
+      foreach (int i in new int[] {4, 3, 9,
+                                   10, 4, 9}) {
+        add_tris(i + tc); } }
+    private void generate_x_plus_z_plus_tris(int tc) {
+      foreach (int i in new int[] {2, 1, 7,
+                                   8, 2, 7}) {
+        add_tris(i + tc); } }
+    private void generate_x_plus_z_minus_tris(int tc) {
+      foreach (int i in new int[] {3, 2, 8,
+                                   9, 3, 8}) {
+        add_tris(i + tc); } }
+    private void generate_x_minus_z_plus_tris(int tc) {
+      foreach (int i in new int[] {0, 5, 11,
+                                   6, 0, 11}) {
+        add_tris(i + tc); } }
+    private void generate_x_minus_z_minus_tris(int tc) {
+      foreach (int i in new int[] {5, 4, 10,
+                                   11, 5, 10}) {
+        add_tris(i + tc); } }
 
 
     public void MakeMesh()
