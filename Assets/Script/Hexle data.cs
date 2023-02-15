@@ -11,6 +11,7 @@ public class Hexledata : MonoBehaviour
         new Vector3(0.75f ,0.75f ,0.06f ), new Vector3(0.25f ,0.75f ,0.06f ), new Vector3(0 ,0.75f ,0.5f ),
         new Vector3(0.25f ,0 ,0.94f ), new Vector3(0.75f ,0 ,0.94f ), new Vector3(1 ,0 ,0.5f ),
         new Vector3(0.75f ,0 ,0.06f ), new Vector3(0.25f ,0 ,0.06f ), new Vector3(0 ,0 ,0.5f )
+
     };
 
     public static readonly Vector2[] uv = new Vector2[12]
