@@ -51,13 +51,12 @@ public class Chunk : MonoBehaviour
     {
         if(chunkPosition.y < 3)
         {
-            Logger.Log("did something");
             CreateAllHex();
         }
 
         //CreateOneHex(new Vector3Int(16,16,16));
-        EstablishChunkVertices();
-        EstablishChunkuvs();
+        generate_vertices();
+        generate_uvs();
         generate_tris();
         MakeMesh();
 
@@ -96,100 +95,36 @@ public class Chunk : MonoBehaviour
     }
 
 
+    // +============+
+    // | GENERATE_* |
+    // +============+
 
-    // adds vertices for each hexagon in the chunk to the list of vertices
-    // NOTE: DO NOT CALL SUCCESSIVELY WITHOUT CLEARING VERTICES
-    public void EstablishChunkVertices()
-    {
-        for (int I = 0; I < CHUNK_SIZE.x; I++)
-        {
-            for (int J = 0; J < CHUNK_SIZE.y; J++)
-            {
-                for (int K = 0; K < CHUNK_SIZE.y; K++)
-                {
-                    if (this.chunkData[I,J,K] != null)
-                    {
+    private void add_vertex(Vector3 v) {
+      vertices.Add(v); }
+    private void generate_vertices() {
+      Vector3 x_a = new Vector3(0.75f, 0.75f, 0.88f);
 
-                        if (I % 2 == 0)
-                        {
-
-                            this.vertices.Add(Hexledata.vert[0] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[1] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[2] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[3] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[4] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[5] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
+      for (int x = 0; x < CHUNK_SIZE.x; x++) {
+        for (int y = 0; y < CHUNK_SIZE.y; y++) {
+          for (int z = 0; z < CHUNK_SIZE.z; z++) {
+            if (chunkData[x, y, z] != null) {
+              for (int i = 0; i < 12; i++) {
+                add_vertex(Hexledata.vert[i] +
+                           Vector3.Scale(x_a, new Vector3(x, y, (z + ((x % 2) * 0.5f)))) +
+                           globalPosition);
+    } } } } } }
 
 
-                            this.vertices.Add(Hexledata.vert[6] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[7] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[8] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[9] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[10] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[11] + new Vector3(I * 0.75f, J * 0.75f, K * 0.88f) + this.globalPosition);
-
-                        }
-                        else
-                        {
-
-                            this.vertices.Add(Hexledata.vert[0] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[1] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[2] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[3] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[4] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[5] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-
-
-                            this.vertices.Add(Hexledata.vert[6] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[7] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[8] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[9] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[10] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-                            this.vertices.Add(Hexledata.vert[11] + new Vector3(I * 0.75f, J * 0.75f, (K + 0.5f) * 0.88f) + this.globalPosition);
-
-                        }
-
-                    }
-                 
-                }
-            }
-        }
-    }
-
-
-
-    // like the version for vertices, but generates the proper uvs for each of them
-    // NOTE: ALSO DO NOT CALL THIS TWICE SUCCESSIVELY WITHOUT CLEARING UVS
-    public void EstablishChunkuvs()
-    {
-        for (int I = 0; I < CHUNK_SIZE.x; I++)
-        {
-            for (int J = 0; J < CHUNK_SIZE.y; J++)
-            {
-                for (int K = 0; K < CHUNK_SIZE.y; K++)
-                {
-                    if (this.chunkData[I, J, K] != null)
-                    {
-
-                        this.uv.Add(Hexledata.uv[0]);
-                        this.uv.Add(Hexledata.uv[1]);
-                        this.uv.Add(Hexledata.uv[2]);
-                        this.uv.Add(Hexledata.uv[3]);
-                        this.uv.Add(Hexledata.uv[4]);
-                        this.uv.Add(Hexledata.uv[5]);
-
-                        this.uv.Add(Hexledata.uv[6]);
-                        this.uv.Add(Hexledata.uv[7]);
-                        this.uv.Add(Hexledata.uv[8]);
-                        this.uv.Add(Hexledata.uv[9]);
-                        this.uv.Add(Hexledata.uv[10]);
-                        this.uv.Add(Hexledata.uv[11]);
-
-                    }
-                }
-            }
-        }
-    }
+    private void add_uv(Vector2 a) {
+      uv.Add(a); }
+    private void generate_uvs() {
+      for (int x = 0; x < CHUNK_SIZE.x; x++) {
+        for (int y = 0; y < CHUNK_SIZE.y; y++) {
+          for (int z = 0; z < CHUNK_SIZE.z; z++) {
+            if (chunkData[x, y, z] != null) {
+              for (int i = 0; i < 12; i++) {
+                add_uv(Hexledata.uv[i]);
+    } } } } } }
 
 
     private void generate_tris() {
@@ -311,6 +246,9 @@ public class Chunk : MonoBehaviour
               (chunkData[x - 1, y, z] == null));
     }
 
+    // +=================+
+    // | GENERATE_*_TRIS |
+    // +=================+
 
     private void generate_y_plus_tris(int tc) { 
       tris.Add(0 + tc);
@@ -398,7 +336,7 @@ public class Chunk : MonoBehaviour
     public void ColliderCreate()
     {
 
-        Destroy(this.gameObject.GetComponent<MeshCollider>());
+        ColliderRemove();
 
         this.gameObject.AddComponent<MeshCollider>();
 
