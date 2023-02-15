@@ -249,9 +249,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WORLD_SIZE: {x: 256, y: 24}
-  worldcheck: {x: 12, y: 12, z: 12}
+  worldcheck: {x: 24, y: 24, z: 24}
   material: {fileID: 2100000, guid: 95267c2cfc12d487c85f95a85c24f83c, type: 2}
-  renderSize: 2
   ok: {fileID: 4671163073751224620}
 --- !u!4 &417028524
 Transform:
