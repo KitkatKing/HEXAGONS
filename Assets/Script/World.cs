@@ -95,7 +95,7 @@ public class World : MonoBehaviour
         {
             for (int y = ClampWorldY(chunkPosition.y - renderSize / 2); y < ClampWorldY(chunkPosition.y + renderSize / 2); y++)
             {
-                for (int z = ClampWorldX(chunkPosition.z - renderSize); z < ClampWorldX(chunkPosition.x + renderSize); z++)
+                for (int z = ClampWorldX(chunkPosition.z - renderSize); z < ClampWorldX(chunkPosition.z + renderSize); z++)
                 {
                     if(world[x, y, z].vertices.Count == 0)
                     {
