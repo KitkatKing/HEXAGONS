@@ -15,6 +15,7 @@ public class World : MonoBehaviour
     public int renderSize;
 
     public GameObject ok;
+    private Vector3Int previous_player_chunk_pos;
 
     void Start()
     {
@@ -28,6 +29,7 @@ public class World : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
         
         if(Input.GetKeyUp(KeyCode.Space))
         {
@@ -41,6 +43,13 @@ public class World : MonoBehaviour
 
        // Debug.Log(PlayerToChunk(ok.transform.position));
 
+    }
+
+    private void UpdateChunksAroundPlayer(Vector3Int ChunkPos) {
+        if (!ChunkPos.Equals(previous_player_chunk_pos)) {
+            previous_player_chunk_pos = ChunkPos;
+            PlayerLoad(ChunkPos);
+        }
     }
 
 
