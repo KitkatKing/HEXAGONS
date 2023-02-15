@@ -39,6 +39,8 @@ public class World : MonoBehaviour
           GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
         }
 
+       // Debug.Log(PlayerToChunk(ok.transform.position));
+
     }
 
 
@@ -91,14 +93,14 @@ public class World : MonoBehaviour
 
         for (int x = ClampWorldX(chunkPosition.x - renderSize); x < ClampWorldX(chunkPosition.x + renderSize); x++)
         {
-            for (int y = ClampWorldX(chunkPosition.y - renderSize / 2); y < ClampWorldX(chunkPosition.y + renderSize / 2); y++)
+            for (int y = ClampWorldY(chunkPosition.y - renderSize / 2); y < ClampWorldY(chunkPosition.y + renderSize / 2); y++)
             {
                 for (int z = ClampWorldX(chunkPosition.z - renderSize); z < ClampWorldX(chunkPosition.x + renderSize); z++)
                 {
                     if(world[x, y, z].vertices.Count == 0)
                     {
 
-                        Debug.Log(world[x, y, z].chunkPosition);
+                        Debug.Log(chunkPosition);
                         
                         world[x, y, z].DoShit();
 
