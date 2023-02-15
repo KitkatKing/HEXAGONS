@@ -76,22 +76,22 @@ public class World : MonoBehaviour
     {
         if (!ChunkPos.Equals(previous_player_chunk_pos))
         {
-<<<<<<< Updated upstream
-            for (int y = ClampWorldY(chunkPosition.y - renderSize / 2); y < ClampWorldY(chunkPosition.y + renderSize / 2); y++)
-=======
-            previous_player_chunk_pos = ChunkPos;
-            PlayerLoad(ChunkPos, 5, 5, 5, 5);
+
+                previous_player_chunk_pos = ChunkPos;
+            PlayerLoad(ChunkPos, 5);
+            
+
         }
 
     }
 
 
-        public void PlayerLoad(Vector3Int chunkPosition, int totalSize, int verticesSize, int TriSize, int ColliderSize)
-        {
+
+    public void PlayerLoad(Vector3Int chunkPosition, int totalSize)
+    {
         for (int x = chunkPosition.x - totalSize; x < chunkPosition.x + totalSize; x++)
         {
             for (int y = chunkPosition.y - totalSize; y < chunkPosition.y + totalSize; y++)
->>>>>>> Stashed changes
             {
                 for (int z = chunkPosition.z - totalSize; z < chunkPosition.z + totalSize; z++)
                 {
@@ -100,30 +100,12 @@ public class World : MonoBehaviour
                         if (world[x, y, z].isStartCreateGen == false)
                         {
 
-<<<<<<< Updated upstream
-                        Debug.Log(chunkPosition);
-                        
-                        world[x, y, z].DoShit();
-=======
                             world[x, y, z].VoxelCreationCall();
->>>>>>> Stashed changes
 
                             world[x, y, z].isStartCreateGen = true;
 
                         }
-                    }
-                }
-            }
-        }
 
-        for (int x = chunkPosition.x - verticesSize; x < chunkPosition.x + verticesSize; x++)
-        {
-            for (int y = chunkPosition.y - verticesSize; y < chunkPosition.y + verticesSize; y++)
-            {
-                for (int z = chunkPosition.z - verticesSize; z < chunkPosition.z + verticesSize; z++)
-                {
-                    if (x >= 0 && y >= 0 && z >= 0)
-                    {
                         if (world[x, y, z].isVerticesGen == false)
                         {
 
@@ -132,19 +114,7 @@ public class World : MonoBehaviour
                             world[x, y, z].isVerticesGen = true;
 
                         }
-                    }
-                }
-            }
-        }
 
-        for (int x = chunkPosition.x - TriSize; x < chunkPosition.x + TriSize; x++)
-        {
-            for (int y = chunkPosition.y - TriSize; y < chunkPosition.y + TriSize; y++)
-            {
-                for (int z = chunkPosition.z - TriSize; z < chunkPosition.z + TriSize; z++)
-                {
-                    if (x >= 0 && y >= 0 && z >= 0)
-                    {
                         if (world[x, y, z].isTrisGen == false)
                         {
 
@@ -153,19 +123,7 @@ public class World : MonoBehaviour
                             world[x, y, z].isTrisGen = true;
 
                         }
-                    }
-                }
-            }
-        }
 
-        for (int x = chunkPosition.x - ColliderSize; x < chunkPosition.x + ColliderSize; x++)
-        {
-            for (int y = chunkPosition.y - ColliderSize; y < chunkPosition.y + ColliderSize; y++)
-            {
-                for (int z = chunkPosition.z - ColliderSize; z < chunkPosition.z + ColliderSize; z++)
-                {
-                    if (x >= 0 && y >= 0 && z >= 0)
-                    {
                         if (world[x, y, z].isMeshGen == false)
                         {
 
@@ -174,10 +132,12 @@ public class World : MonoBehaviour
                             world[x, y, z].isMeshGen = true;
 
                         }
+
                     }
                 }
             }
         }
+
     }
 
 
