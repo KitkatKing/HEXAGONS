@@ -16,6 +16,8 @@ public class World : MonoBehaviour
 
     public GameObject ok;
 
+    public bool firstspace = false;
+
     void Start()
     {
         Logger.Log("world loaded");
@@ -34,15 +36,13 @@ public class World : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-
+            firstspace = true;
           //  PlayerLoad(PlayerToChunk(ok.transform.position), 10, 5, 3, 2);
            
         }
         if (Input.GetKeyDown(KeyCode.LeftControl)) {
           GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
         }
-
-       // Debug.Log(PlayerToChunk(ok.transform.position));
 
     }
 
@@ -57,6 +57,24 @@ public class World : MonoBehaviour
                 {
 
                     world[x, y, z] = new Chunk(new Vector3Int(x, y, z), gameObject.GetComponent<MeshFilter>(), material);
+
+                    if (world[x, y, z].isStartCreateGen == false)
+                    {
+
+                        world[x, y, z].VoxelCreationCall();
+
+                        world[x, y, z].isStartCreateGen = true;
+
+                    }
+
+                    if (world[x, y, z].isVerticesGen == false)
+                    {
+
+                        world[x, y, z].VerticesGenerationCall();
+
+                        world[x, y, z].isVerticesGen = true;
+
+                    }
 
                 }
             }
@@ -74,11 +92,11 @@ public class World : MonoBehaviour
 
     private void UpdateChunksAroundPlayer(Vector3Int ChunkPos)
     {
-        if (!ChunkPos.Equals(previous_player_chunk_pos))
+        if (!ChunkPos.Equals(previous_player_chunk_pos) && firstspace == true)
         {
 
                 previous_player_chunk_pos = ChunkPos;
-            PlayerLoad(ChunkPos, 5);
+            PlayerLoad(ChunkPos, 2);
             
 
         }
@@ -97,23 +115,6 @@ public class World : MonoBehaviour
                 {
                     if (x >= 0 && y >= 0 && z >= 0 && x < WORLD_SIZE.x && y < WORLD_SIZE.y && z < WORLD_SIZE.x)
                     {
-                        if (world[x, y, z].isStartCreateGen == false)
-                        {
-
-                            world[x, y, z].VoxelCreationCall();
-
-                            world[x, y, z].isStartCreateGen = true;
-
-                        }
-
-                        if (world[x, y, z].isVerticesGen == false)
-                        {
-
-                            world[x, y, z].VerticesGenerationCall();
-
-                            world[x, y, z].isVerticesGen = true;
-
-                        }
 
                         if (world[x, y, z].isTrisGen == false)
                         {
