@@ -15,6 +15,7 @@ public class World : MonoBehaviour
     private Vector3Int previous_player_chunk_pos;
 
     public GameObject ok;
+    private Vector3Int previous_player_chunk_pos;
 
     public bool firstspace = false;
 
@@ -30,7 +31,6 @@ public class World : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
 
 
@@ -44,6 +44,13 @@ public class World : MonoBehaviour
           GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
         }
 
+    }
+
+    private void UpdateChunksAroundPlayer(Vector3Int ChunkPos) {
+        if (!ChunkPos.Equals(previous_player_chunk_pos)) {
+            previous_player_chunk_pos = ChunkPos;
+            PlayerLoad(ChunkPos);
+        }
     }
 
 
