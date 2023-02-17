@@ -248,10 +248,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11078f03c26be466f805a294ddd50d1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WORLD_SIZE: {x: 16, y: 16}
-  worldcheck: {x: 12, y: 12, z: 12}
+  WORLD_SIZE: {x: 256, y: 24}
+  worldcheck: {x: 24, y: 24, z: 24}
   material: {fileID: 2100000, guid: 95267c2cfc12d487c85f95a85c24f83c, type: 2}
-  renderSize: 2
   ok: {fileID: 4671163073751224620}
 --- !u!4 &417028524
 Transform:

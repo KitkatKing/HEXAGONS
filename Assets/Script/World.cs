@@ -12,10 +12,12 @@ public class World : MonoBehaviour
 
     public Material material;
 
-    public int renderSize;
+    private Vector3Int previous_player_chunk_pos;
 
     public GameObject ok;
     private Vector3Int previous_player_chunk_pos;
+
+    public bool firstspace = false;
 
     void Start()
     {
@@ -30,18 +32,17 @@ public class World : MonoBehaviour
     void Update()
     {
         UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
-        
-        if(Input.GetKeyUp(KeyCode.Space))
-        {
 
-            PlayerLoad(PlayerToChunk(ok.transform.position));
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            firstspace = true;
+          //  PlayerLoad(PlayerToChunk(ok.transform.position), 10, 5, 3, 2);
            
         }
-        if (Input.GetKeyDown(KeyCode.A)) {
+        if (Input.GetKeyDown(KeyCode.LeftControl)) {
           GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
         }
-
-       // Debug.Log(PlayerToChunk(ok.transform.position));
 
     }
 
@@ -64,29 +65,29 @@ public class World : MonoBehaviour
 
                     world[x, y, z] = new Chunk(new Vector3Int(x, y, z), gameObject.GetComponent<MeshFilter>(), material);
 
+                    if (world[x, y, z].isStartCreateGen == false)
+                    {
+
+                        world[x, y, z].VoxelCreationCall();
+
+                        world[x, y, z].isStartCreateGen = true;
+
+                    }
+
+                    if (world[x, y, z].isVerticesGen == false)
+                    {
+
+                        world[x, y, z].VerticesGenerationCall();
+
+                        world[x, y, z].isVerticesGen = true;
+
+                    }
+
                 }
             }
         }
     }
 
-
-
-
-
-
-    public int ClampWorldX(int number)
-    {
-
-        return Mathf.Clamp(number, 0, WORLD_SIZE.x - 1);
-
-    }
-
-    public int ClampWorldY(int number)
-    {
-
-        return Mathf.Clamp(number, 0, WORLD_SIZE.y - 1);
-
-    }
 
     public Vector3Int PlayerToChunk(Vector3 PlayerPos)
     {
@@ -96,35 +97,61 @@ public class World : MonoBehaviour
     }
 
 
-
-    public void PlayerLoad(Vector3Int chunkPosition)
+    private void UpdateChunksAroundPlayer(Vector3Int ChunkPos)
     {
-
-        for (int x = ClampWorldX(chunkPosition.x - renderSize); x < ClampWorldX(chunkPosition.x + renderSize); x++)
+        if (!ChunkPos.Equals(previous_player_chunk_pos) && firstspace == true)
         {
-            for (int y = ClampWorldY(chunkPosition.y - renderSize / 2); y < ClampWorldY(chunkPosition.y + renderSize / 2); y++)
+
+                previous_player_chunk_pos = ChunkPos;
+            PlayerLoad(ChunkPos, 2);
+            
+
+        }
+
+    }
+
+
+
+    public void PlayerLoad(Vector3Int chunkPosition, int totalSize)
+    {
+        for (int x = chunkPosition.x - totalSize; x < chunkPosition.x + totalSize; x++)
+        {
+            for (int y = chunkPosition.y - totalSize; y < chunkPosition.y + totalSize; y++)
             {
-                for (int z = ClampWorldX(chunkPosition.z - renderSize); z < ClampWorldX(chunkPosition.z + renderSize); z++)
+                for (int z = chunkPosition.z - totalSize; z < chunkPosition.z + totalSize; z++)
                 {
-                    if(world[x, y, z].vertices.Count == 0)
+                    if (x >= 0 && y >= 0 && z >= 0 && x < WORLD_SIZE.x && y < WORLD_SIZE.y && z < WORLD_SIZE.x)
                     {
 
-                        Debug.Log(chunkPosition);
-                        
-                        world[x, y, z].DoShit();
+                        if (world[x, y, z].isTrisGen == false)
+                        {
+
+                            world[x, y, z].UvTriCreationCall();
+
+                            world[x, y, z].isTrisGen = true;
+
+                        }
+
+                        if (world[x, y, z].isMeshGen == false)
+                        {
+
+                            world[x, y, z].MeshColliderCall();
+
+                            world[x, y, z].isMeshGen = true;
+
+                        }
 
                     }
-                    else
-                    {
-                        Debug.Log("Nah");
-                    }
-
-
                 }
             }
         }
 
     }
+
+
+
+
+
 
 
     public Vector3Int ChunkBlockToWorld(Vector3Int chunk, Vector3Int block)

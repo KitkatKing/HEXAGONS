@@ -10,7 +10,7 @@ public class Chunk : MonoBehaviour
     public Vector3Int chunkPosition;
     private Vector3 globalPosition;
 
-    public Hexagon[,,] chunkData;
+    public int[,,] chunkData;
 
     GameObject gameObject;
 
@@ -26,7 +26,13 @@ public class Chunk : MonoBehaviour
 
     public List<int> tris = new List<int>();
 
+    public bool isStartCreateGen = false;
 
+    public bool isVerticesGen = false;
+
+    public bool isTrisGen = false;
+
+    public bool isMeshGen = false;
 
 
     public Chunk(Vector3Int chunkPosition, MeshFilter mesh, Material material)
@@ -38,29 +44,63 @@ public class Chunk : MonoBehaviour
 
         this.globalPosition = new Vector3(chunkPosition.x * 32 * 0.75f, chunkPosition.y * 32 * 0.75f, chunkPosition.z * 32 * 0.88f);
 
-        this.chunkData = new Hexagon[CHUNK_SIZE.x, CHUNK_SIZE.y, CHUNK_SIZE.z];
+        this.chunkData = new int[CHUNK_SIZE.x, CHUNK_SIZE.y, CHUNK_SIZE.z];
+        createIntChunk();
 
         this.meshFilter = mesh;
 
         this.material = material;
 
-
     }
 
-    public void DoShit()
+
+    public void createIntChunk()
     {
-        if(chunkPosition.y < 3)
+        for (int I = 0; I < CHUNK_SIZE.x; I++)
+        {
+            for (int J = 0; J < CHUNK_SIZE.y; J++)
+            {
+                for (int K = 0; K < CHUNK_SIZE.y; K++)
+                {
+
+                    this.chunkData[I, J, K] = 0;
+
+                }
+            }
+        }
+    }
+
+
+
+    public void VoxelCreationCall()
+    {
+        if (chunkPosition.y < 3)
         {
             CreateAllHex();
         }
 
         //CreateOneHex(new Vector3Int(16,16,16));
+    }
+
+    public void VerticesGenerationCall()
+    {
         generate_vertices();
+    }
+
+    public void UvTriCreationCall()
+    {
         generate_uvs();
         generate_tris();
-        MakeMesh();
-
     }
+
+    public void MeshColliderCall()
+    {
+        MakeMesh();
+    }
+
+
+
+
 
 
     public void CreateAllHex()
@@ -72,7 +112,7 @@ public class Chunk : MonoBehaviour
                 for (int K = 0; K < CHUNK_SIZE.y; K++)
                 {
 
-                    this.chunkData[I, J, K] = new Hexagon();
+                    this.chunkData[I, J, K] = 1;
 
                 }
             }
@@ -82,7 +122,7 @@ public class Chunk : MonoBehaviour
     public void RemoveOneHex(Vector3Int pos)
     {
 
-        this.chunkData[pos.x, pos.y, pos.z] = null;
+        this.chunkData[pos.x, pos.y, pos.z] = 0;
 
     }
 
@@ -90,7 +130,7 @@ public class Chunk : MonoBehaviour
     public void CreateOneHex(Vector3Int pos)
     {
 
-        this.chunkData[pos.x, pos.y, pos.z] = new Hexagon();
+        this.chunkData[pos.x, pos.y, pos.z] = 1;
 
     }
 
@@ -101,13 +141,15 @@ public class Chunk : MonoBehaviour
 
     private void add_vertex(Vector3 v) {
       vertices.Add(v); }
+
+
     private void generate_vertices() {
       Vector3 x_a = new Vector3(0.75f, 0.75f, 0.88f);
 
       for (int x = 0; x < CHUNK_SIZE.x; x++) {
         for (int y = 0; y < CHUNK_SIZE.y; y++) {
           for (int z = 0; z < CHUNK_SIZE.z; z++) {
-            if (chunkData[x, y, z] != null) {
+            if (chunkData[x, y, z] != 0) {
               for (int i = 0; i < 12; i++) {
                 add_vertex(Hexledata.vert[i] +
                            Vector3.Scale(x_a, new Vector3(x, y, (z + ((x % 2) * 0.5f)))) +
@@ -117,11 +159,13 @@ public class Chunk : MonoBehaviour
 
     private void add_uv(Vector2 a) {
       uv.Add(a); }
+
+
     private void generate_uvs() {
       for (int x = 0; x < CHUNK_SIZE.x; x++) {
         for (int y = 0; y < CHUNK_SIZE.y; y++) {
           for (int z = 0; z < CHUNK_SIZE.z; z++) {
-            if (chunkData[x, y, z] != null) {
+            if (chunkData[x, y, z] != 0) {
               for (int i = 0; i < 12; i++) {
                 add_uv(Hexledata.uv[i]);
     } } } } } }
@@ -135,8 +179,9 @@ public class Chunk : MonoBehaviour
 
       for (int x = 0; x < CHUNK_SIZE.x; x++) {
         for (int y = 0; y < CHUNK_SIZE.y; y++) {
+
           for (int z = 0; z < CHUNK_SIZE.z; z++) {
-            if (chunkData[x, y, z] != null) {
+            if (chunkData[x, y, z] != 0) {
               if (does_hex_y_plus_exist(x, y, z)) {
                 generate_y_plus_tris(tc);
               }
@@ -195,55 +240,79 @@ public class Chunk : MonoBehaviour
     // reason for using 3 integers rather than a vector is nothing
     // specific to vectors is in this function or returned by it
     private bool does_hex_y_plus_exist(int x, int y, int z) {
-      // double bars are necessary to avoid an IndexOutOfBounds exception by checking the left side first
-      if ((y + 1 >= CHUNK_SIZE.y) || (chunkData[x, y + 1, z] == null)) {
+
+       // if ((y + 1 >= CHUNK_SIZE.y)) { return false; }
+
+        // double bars are necessary to avoid an IndexOutOfBounds exception by checking the left side first
+        if ((y + 1 >= CHUNK_SIZE.y) || (chunkData[x, y + 1, z] == 0)) {
         return true;
       } else {
         return false;
       }
     }
     private bool does_hex_y_minus_exist(int x, int y, int z) {
-      // further reduction of the previous because:
-      // "if condition { return true; } else { return false; }" == "return condition"
 
-      // note the double bars "||" are necessary because it evaluates the
-      // right condition only if the left condition evaluates to false,
-      // compared to single bar "|" which checks both.
-      return ((y <= 0) ||
-              (chunkData[x, y - 1, z] == null));
+        if ((y <= 0)) { return false; }
+
+        // further reduction of the previous because:
+        // "if condition { return true; } else { return false; }" == "return condition"
+
+        // note the double bars "||" are necessary because it evaluates the
+        // right condition only if the left condition evaluates to false,
+        // compared to single bar "|" which checks both.
+        return ((y <= 0) ||
+              (chunkData[x, y - 1, z] == 0));
     }
 
     private bool does_hex_z_plus_exist(int x, int y, int z) {
+
+        if((z + 1 >= CHUNK_SIZE.z)) { return false; }
+
       return ((z + 1 >= CHUNK_SIZE.z) ||
-              (chunkData[x, y, z + 1] == null));
+              (chunkData[x, y, z + 1] == 0));
     }
     private bool does_hex_z_minus_exist(int x, int y, int z) {
+
+           if((z <= 0)) { return false; }
+
       return ((z <= 0) ||
-              (chunkData[x, y, z - 1] == null));
+              (chunkData[x, y, z - 1] == 0));
     }
 
     private bool does_hex_x_plus_z_plus_exist(int x, int y, int z) {
-      return (((x + 1 >= CHUNK_SIZE.x) ||
+
+        if ((x + 1 >= CHUNK_SIZE.x)) { return false; }
+
+        return (((x + 1 >= CHUNK_SIZE.x) ||
               // this check is necessary because we add to the value
               // of z, depending on which x hexagon layer it is in,
               // in the generate_tris function.
                (z >= CHUNK_SIZE.z)) ||
-              (chunkData[x + 1, y, z] == null));
+              (chunkData[x + 1, y, z] == 0));
     }
     private bool does_hex_x_minus_z_plus_exist(int x, int y, int z) {
-      return (((x <= 0) ||
+
+        if ((x <= 0) || (z >= CHUNK_SIZE.z)) { return false; }
+
+        return (((x <= 0) ||
                (z >= CHUNK_SIZE.z)) ||
-              (chunkData[x - 1, y, z] == null));
+              (chunkData[x - 1, y, z] == 0));
     }
     private bool does_hex_x_plus_z_minus_exist(int x, int y, int z) {
-      return (((x + 1 >= CHUNK_SIZE.x) ||
+
+        if ((x + 1 >= CHUNK_SIZE.x) || (z <= 0)) { return false; }
+
+        return (((x + 1 >= CHUNK_SIZE.x) ||
                (z <= 0)) ||
-              (chunkData[x + 1, y, z] == null));
+              (chunkData[x + 1, y, z] == 0));
     }
     private bool does_hex_x_minus_z_minus_exist(int x, int y, int z) {
-      return (((x <= 0) ||
+
+        if ((x <= 0) || (z < 0)) { return false; }
+
+        return (((x <= 0) ||
                (z < 0)) ||
-              (chunkData[x - 1, y, z] == null));
+              (chunkData[x - 1, y, z] == 0));
     }
 
     // +=================+
@@ -306,6 +375,11 @@ public class Chunk : MonoBehaviour
       foreach (int i in new int[] {5, 4, 10,
                                    11, 5, 10}) {
         add_tris(i + tc); } }
+
+
+
+
+
 
 
     public void MakeMesh()
