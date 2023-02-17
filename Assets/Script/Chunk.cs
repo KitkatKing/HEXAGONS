@@ -30,8 +30,6 @@ public class Chunk : MonoBehaviour
 
     public bool isVerticesGen = false;
 
-    public bool isTrisGen = false;
-
     public bool isMeshGen = false;
 
 
@@ -45,13 +43,14 @@ public class Chunk : MonoBehaviour
         this.globalPosition = new Vector3(chunkPosition.x * 32 * 0.75f, chunkPosition.y * 32 * 0.75f, chunkPosition.z * 32 * 0.88f);
 
         this.chunkData = new int[CHUNK_SIZE.x, CHUNK_SIZE.y, CHUNK_SIZE.z];
-        createIntChunk();
+
 
         this.meshFilter = mesh;
 
         this.material = material;
 
     }
+
 
 
     public void createIntChunk()
@@ -79,7 +78,6 @@ public class Chunk : MonoBehaviour
             CreateAllHex();
         }
 
-        //CreateOneHex(new Vector3Int(16,16,16));
     }
 
     public void VerticesGenerationCall()
@@ -119,20 +117,13 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    public void RemoveOneHex(Vector3Int pos)
-    {
-
-        this.chunkData[pos.x, pos.y, pos.z] = 0;
-
-    }
 
 
-    public void CreateOneHex(Vector3Int pos)
-    {
 
-        this.chunkData[pos.x, pos.y, pos.z] = 1;
+    /// IDEA
+    /// // rather than having multiple methods for facetesting. Use one method with a Vector3Int parameter and run a foreach loop with an array of vector3s 
+    /// IDEA
 
-    }
 
 
     // +============+
@@ -158,7 +149,7 @@ public class Chunk : MonoBehaviour
 
 
     private void add_uv(Vector2 a) {
-      uv.Add(a); }
+      this.uv.Add(a); }
 
 
     private void generate_uvs() {
@@ -233,6 +224,14 @@ public class Chunk : MonoBehaviour
       }
     }
 
+
+
+
+
+
+
+
+
     // +==================+
     // | DOES_HEX_*_EXIST |
     // +==================+
@@ -263,7 +262,6 @@ public class Chunk : MonoBehaviour
         return ((y <= 0) ||
               (chunkData[x, y - 1, z] == 0));
     }
-
     private bool does_hex_z_plus_exist(int x, int y, int z) {
 
         if((z + 1 >= CHUNK_SIZE.z)) { return false; }
@@ -278,7 +276,6 @@ public class Chunk : MonoBehaviour
       return ((z <= 0) ||
               (chunkData[x, y, z - 1] == 0));
     }
-
     private bool does_hex_x_plus_z_plus_exist(int x, int y, int z) {
 
         if ((x + 1 >= CHUNK_SIZE.x)) { return false; }
@@ -382,6 +379,12 @@ public class Chunk : MonoBehaviour
 
 
 
+
+
+
+
+
+
     public void MakeMesh()
     {
         Mesh mesh = new Mesh();
@@ -389,10 +392,28 @@ public class Chunk : MonoBehaviour
         mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
         mesh.vertices = vertices.ToArray();
+        Debug.Log(vertices.ToArray().Length + "vert");
 
-        mesh.uv = uv.ToArray();
+        if(uv.ToArray().Length != 393216)
+        {
+           Vector2[] uves = new Vector2[uv.ToArray().Length / 2];
+
+            for (int i = 0; i < uv.ToArray().Length / 2; i++)
+            {
+                uves[i] = uv.ToArray()[i];
+            }
+
+            mesh.uv = uv.ToArray();
+        }
+        else
+        {
+            mesh.uv = uv.ToArray();
+        }
+
+        Debug.Log(uv.ToArray().Length + "uv");
 
         mesh.triangles = tris.ToArray();
+        
 
         mesh.RecalculateNormals();
 

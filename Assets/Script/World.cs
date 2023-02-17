@@ -8,6 +8,8 @@ public class World : MonoBehaviour
 
     public Chunk[,,] world;
 
+    Dictionary<Vector3Int, Chunk> worldDict = new Dictionary<Vector3Int, Chunk>();
+
     public Vector3Int worldcheck;
 
     public Material material;
@@ -18,33 +20,57 @@ public class World : MonoBehaviour
 
     public bool firstspace = false;
 
+    Queue ChunkGenQueue = new Queue();
+
+
     void Start()
     {
-        Logger.Log("world loaded");
-        world = new Chunk[WORLD_SIZE.x, WORLD_SIZE.y, WORLD_SIZE.x];
-
         bruh();
-
     }
 
-    // Update is called once per frame
-    void Update()
+
+
+
+
+    public void SendChunkToQueue(Chunk chunk){ ChunkGenQueue.Enqueue(chunk); }
+    public IEnumerator RenderChunks()
     {
+        Debug.Log("erm");
 
-        UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
-
-
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (ChunkGenQueue.Count != 0)
         {
-            firstspace = true;
-          //  PlayerLoad(PlayerToChunk(ok.transform.position), 10, 5, 3, 2);
-           
-        }
-        if (Input.GetKeyDown(KeyCode.LeftControl)) {
-          GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
+
+            foreach (Chunk chunk in ChunkGenQueue.ToArray())
+            {
+
+                chunk.UvTriCreationCall();
+
+                yield return null;
+
+                chunk.MeshColliderCall();
+
+                chunk.isMeshGen = true;
+
+
+                if (ChunkGenQueue.Count != 0)
+                {
+                    ChunkGenQueue.Dequeue();
+                }
+
+                Debug.Log("ok");
+
+                yield return null;
+            }
+
         }
 
     }
+
+
+
+
+
+
 
 
     public void bruh()
@@ -56,31 +82,33 @@ public class World : MonoBehaviour
                 for (int z = 0; z < worldcheck.x; z++)
                 {
 
-                    world[x, y, z] = new Chunk(new Vector3Int(x, y, z), gameObject.GetComponent<MeshFilter>(), material);
-
-                    if (world[x, y, z].isStartCreateGen == false)
-                    {
-
-                        world[x, y, z].VoxelCreationCall();
-
-                        world[x, y, z].isStartCreateGen = true;
-
-                    }
-
-                    if (world[x, y, z].isVerticesGen == false)
-                    {
-
-                        world[x, y, z].VerticesGenerationCall();
-
-                        world[x, y, z].isVerticesGen = true;
-
-                    }
+                    worldDict.Add(new Vector3Int(x,y,z), new Chunk(new Vector3Int(x, y, z), gameObject.GetComponent<MeshFilter>(), material));
 
                 }
             }
         }
     }
 
+
+    // Update is called once per frame
+    void Update()
+    {
+
+
+        UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
+
+
+
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            firstspace = true;  
+        }
+        if (Input.GetKeyDown(KeyCode.LeftControl)) {
+          GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
+        }
+
+    }
 
     public Vector3Int PlayerToChunk(Vector3 PlayerPos)
     {
@@ -95,10 +123,10 @@ public class World : MonoBehaviour
         if (!ChunkPos.Equals(previous_player_chunk_pos) && firstspace == true)
         {
 
-                previous_player_chunk_pos = ChunkPos;
-            PlayerLoad(ChunkPos, 2);
-            
+            previous_player_chunk_pos = ChunkPos;
+            PlayerLoad(ChunkPos, 5);
 
+            StartCoroutine(RenderChunks());
         }
 
     }
@@ -116,23 +144,33 @@ public class World : MonoBehaviour
                     if (x >= 0 && y >= 0 && z >= 0 && x < WORLD_SIZE.x && y < WORLD_SIZE.y && z < WORLD_SIZE.x)
                     {
 
-                        if (world[x, y, z].isTrisGen == false)
+                        if (worldDict[new Vector3Int(x, y, z)].isStartCreateGen == false)
                         {
+                           
+                            worldDict[new Vector3Int(x, y, z)].VoxelCreationCall();
 
-                            world[x, y, z].UvTriCreationCall();
-
-                            world[x, y, z].isTrisGen = true;
+                            worldDict[new Vector3Int(x, y, z)].isStartCreateGen = true;
 
                         }
 
-                        if (world[x, y, z].isMeshGen == false)
+                        if (worldDict[new Vector3Int(x, y, z)].isVerticesGen == false)
                         {
 
-                            world[x, y, z].MeshColliderCall();
+                            worldDict[new Vector3Int(x, y, z)].VerticesGenerationCall();
 
-                            world[x, y, z].isMeshGen = true;
+                            worldDict[new Vector3Int(x, y, z)].isVerticesGen = true;
 
                         }
+
+                        if (worldDict[new Vector3Int(x, y, z)].isMeshGen == false)
+                        {
+
+                            SendChunkToQueue(worldDict[new Vector3Int(x, y, z)]);
+
+
+                        }
+
+
 
                     }
                 }
@@ -153,7 +191,6 @@ public class World : MonoBehaviour
         return (chunk * 32 + block);
 
     }
-
     public Vector3Int[] WorldToChunkBlock(Vector3Int world)
     {
         Vector3Int chunk = new Vector3Int(world.x / 32, world.y / 32, world.z / 32);
