@@ -394,21 +394,9 @@ public class Chunk : MonoBehaviour
         mesh.vertices = vertices.ToArray();
         Debug.Log(vertices.ToArray().Length + "vert");
 
-        if(uv.ToArray().Length != 393216)
-        {
-           Vector2[] uves = new Vector2[uv.ToArray().Length / 2];
-
-            for (int i = 0; i < uv.ToArray().Length / 2; i++)
-            {
-                uves[i] = uv.ToArray()[i];
-            }
 
             mesh.uv = uv.ToArray();
-        }
-        else
-        {
-            mesh.uv = uv.ToArray();
-        }
+      
 
         Debug.Log(uv.ToArray().Length + "uv");
 

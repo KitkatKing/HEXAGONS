@@ -17,8 +17,7 @@ public class World : MonoBehaviour
     private Vector3Int previous_player_chunk_pos;
 
     public GameObject ok;
-    private Vector3Int previous_player_chunk_pos;
-
+ 
     public bool firstspace = false;
 
     Queue ChunkGenQueue = new Queue();
@@ -66,18 +65,6 @@ public class World : MonoBehaviour
         }
 
     }
-
-    private void UpdateChunksAroundPlayer(Vector3Int ChunkPos) {
-        if (!ChunkPos.Equals(previous_player_chunk_pos)) {
-            previous_player_chunk_pos = ChunkPos;
-            PlayerLoad(ChunkPos);
-        }
-    }
-
-
-
-
-
 
 
 
