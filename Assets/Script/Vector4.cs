@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Unity.IL2CPP.CompilerServices;
@@ -28,6 +29,19 @@ public class Vector4
     public override string ToString()
     {
         return String.Format("({0}, {1}, {2}, {3})", this.s, this.q, this.r, this.y);
+    }
+
+    public class Vector4EqualityComparer : IEqualityComparer<Vector4>
+    {
+        public bool Equals(Vector4 x, Vector4 y)
+        {
+            return (((x.s - y.s) + (x.q - y.q) + (x.r - y.r) + (x.y - y.y)) == 0);
+        }
+
+        public int GetHashCode(Vector4 x)
+        {
+            return x.s.GetHashCode() ^ x.q.GetHashCode() ^ x.r.GetHashCode() ^ x.y.GetHashCode();
+        }
     }
 
 }

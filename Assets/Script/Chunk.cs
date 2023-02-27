@@ -1,17 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Vector4;
 
 public class Chunk : MonoBehaviour
 {
  
-    private int CHUNK_SIZE = 3;
-    private int CHUNK_SIZE_Y = 4;
+    private int CHUNK_SIZE = 16;
+    private int CHUNK_SIZE_Y = 32;
 
     public Vector3Int chunkPosition;
     private Vector3 globalPosition;
 
-    Dictionary<Vector4, Hex> chunkDict = new Dictionary<Vector4, Hex>();
+    Dictionary<Vector4, Hex> chunkDict = new Dictionary<Vector4, Hex>(new Vector4EqualityComparer());
 
 
 
@@ -141,15 +142,22 @@ public class Chunk : MonoBehaviour
             }
         }
 
+        foreach (KeyValuePair<Vector4, Hex> attachStat in this.chunkDict)
+        {
+            //Now you can access the key and value both separately from t$$anonymous$$s attachStat as:
+            //Debug.Log(attachStat.Key);
+           // Debug.Log(attachStat.Value);
+        }
+
     }
 
     public void voxelCreate(Vector4 position)
     {
-      //  if (this.chunkDict.ContainsKey(position) == false)
-       // {
+        if (this.chunkDict.ContainsKey(position) == false)
+        {
             this.chunkDict.Add(position, new Hex());
-            Debug.Log(position);
-      //  }
+          //  Debug.Log(position);
+        }
     }
 
 
@@ -167,22 +175,13 @@ public class Chunk : MonoBehaviour
                 {
                     for (int Y = 0; Y < CHUNK_SIZE_Y; Y++)
                     {
-                        Debug.Log("dingle");
-
                         Vector4 position = new Vector4(S, Q, R, Y);
-
-                     //    Debug.Log(position);
-
-                        //Debug.Log(V4toV3(position));
 
                        if (chunkDict.ContainsKey(position))
                         {
 
-                            Vector3Int ok;
-
                             if (!chunkDict.ContainsKey(position + new Vector4(0, 0, 0, 1)))
                             {
-                                Debug.Log("YOMAMA");
 
                                 for (int i = 0; i < 6; i++)
                                 {
@@ -208,6 +207,37 @@ public class Chunk : MonoBehaviour
                                 tc += 6;
 
                             }
+
+                            if (!chunkDict.ContainsKey(position + new Vector4(0, 0, 0, -1)))
+                            {
+
+                                for (int i = 0; i < 6; i++)
+                                {
+                                    this.vertices.Add(Hexledata.vert[i] + V4toV3(position) * 2);
+
+                                    this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
+
+                                }
+
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(1 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(4 + tc);
+                                this.tris.Add(1 + tc);
+                                this.tris.Add(2 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(4 + tc);
+                                this.tris.Add(5 + tc);
+
+                                tc += 6;
+
+                            }
+
+
+
                             /*
                             if ((dict[position] & (1 << 2)) != 0)
                             {
