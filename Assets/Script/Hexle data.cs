@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hexledata : MonoBehaviour
+public class Hexledata
 {
 
     public static readonly Vector3[] vert = new Vector3[12]
