@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static Vector4;
 
 public class Chunk : MonoBehaviour
@@ -167,9 +168,61 @@ public class Chunk : MonoBehaviour
 
         int tc = 0;
 
-        for (int Y = 0; Y < CHUNK_SIZE_Y; Y++)
+
+        foreach (KeyValuePair<Vector4, Hex> X in chunkDict)
         {
 
+            Debug.Log("what");
+
+            if(chunkDict.ContainsKey(X.Key))
+            {
+
+
+                Debug.Log(X.Key);
+                Debug.Log("ok");
+
+
+
+                if (!chunkDict.ContainsKey(X.Key + new Vector4(0, 0, 0, 1)))
+                {
+
+                    for (int i = 0; i < 6; i++)
+                    {
+                        this.vertices.Add(Hexledata.vert[i] + V4toV3(X.Key) * 2);
+
+                        this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                    }
+
+                    this.tris.Add(0 + tc);
+                    this.tris.Add(1 + tc);
+                    this.tris.Add(3 + tc);
+                    this.tris.Add(0 + tc);
+                    this.tris.Add(3 + tc);
+                    this.tris.Add(4 + tc);
+                    this.tris.Add(1 + tc);
+                    this.tris.Add(2 + tc);
+                    this.tris.Add(3 + tc);
+                    this.tris.Add(0 + tc);
+                    this.tris.Add(4 + tc);
+                    this.tris.Add(5 + tc);
+
+                    tc += 6;
+
+                }
+
+
+            }
+
+        }
+
+
+
+        /*
+
+
+        for (int Y = 0; Y < CHUNK_SIZE_Y; Y++)
+        {
             for (int S = -CHUNK_SIZE; S < CHUNK_SIZE; S++)
             {
                  for (int Q = -CHUNK_SIZE; Q < CHUNK_SIZE; Q++)
@@ -222,6 +275,8 @@ public class Chunk : MonoBehaviour
 
                                 }
 
+                                Debug.Log(position);
+
                                 this.tris.Add(0 + tc);
                                 this.tris.Add(1 + tc);
                                 this.tris.Add(3 + tc);
@@ -239,8 +294,16 @@ public class Chunk : MonoBehaviour
 
                             }
 
+                            if(chunkDict.ContainsKey(position + new Vector4(0, -1, 1, 0)))
+                            {
 
-                            /*
+                                Debug.Log(position + new Vector4(0, -1, 1, 0));
+
+
+                            }
+
+
+                            
                             if (!chunkDict.ContainsKey(position + new Vector4(0, 0, 0, -1)))
                             {
 
@@ -298,16 +361,23 @@ public class Chunk : MonoBehaviour
                                 tc += 4;
 
                             }
-                            */
+                            
 
                             Debug.Log(!chunkDict.ContainsKey(position + new Vector4(-1, 1, 0, 0)));
 
- 
+
+
+
+        
                        }
                       }
                  }
             }
         }
+
+
+
+        */
     }
 
 }

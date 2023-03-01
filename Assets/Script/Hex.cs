@@ -16,4 +16,7 @@ public struct Hex
         hexValues = v;
     }
 
+
+
+
 }
