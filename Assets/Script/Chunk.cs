@@ -115,7 +115,7 @@ public class Chunk : MonoBehaviour
 
     public Vector3 V4toV3(Vector4 v4)
     {
-        return (new Vector3(-0.5f, 0, 0) * v4.s) + (new Vector3(0.5f, 0, 0) * v4.q) + (new Vector3(0, 0, -0.88f) * v4.r) + (new Vector3(0, 1, 0) * v4.y);
+        return (new Vector3(-3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.s) + (new Vector3(3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.q) + (new Vector3(0, 0, -2 * Mathf.Sqrt(3)) * 0.12f * v4.r) + (new Vector3(0, 1, 0) * v4.y);
     }
 
 
@@ -187,7 +187,7 @@ public class Chunk : MonoBehaviour
                                 {
                                     this.vertices.Add(Hexledata.vert[i] + V4toV3(position) * 2);
                                     
-                                    this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
+                                    this.uv.Add(new Vector3(0.25f, 0.25f));
 
                                 }
 
@@ -236,59 +236,33 @@ public class Chunk : MonoBehaviour
 
                             }
 
-
-
-                            /*
-                            if ((dict[position] & (1 << 2)) != 0)
+                            if (!chunkDict.ContainsKey(position + new Vector4(1, 0, 0, 0)))
                             {
 
+                                
+                                this.vertices.Add(Hexledata.vert[4] + V4toV3(position) * 2);
+                                this.vertices.Add(Hexledata.vert[3] + V4toV3(position) * 2);
+                                this.vertices.Add(Hexledata.vert[9] + V4toV3(position) * 2);
+                                this.vertices.Add(Hexledata.vert[10] + V4toV3(position) * 2);
 
-
-                            }
-
-                            if ((dict[position] & (1 << 3)) != 0)
-                            {
-
-
-
-                            }
-
-                            if ((dict[position] & (1 << 4)) != 0)
-                            {
+                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
+                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
+                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
+                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
 
 
 
-                            }
-
-                            if ((dict[position] & (1 << 5)) != 0)
-                            {
-
-
-
-                            }
-
-                            if ((dict[position] & (1 << 6)) != 0)
-                            {
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(1 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(2 + tc);
 
 
+                                tc += 4;
 
                             }
-
-                            if ((dict[position] & (1 << 7)) != 0)
-                            {
-
-
-
-                            }
-
-                            if ((dict[position] & (1 << 8)) != 0)
-                            {
-
-
-
-                            }
-                            */
-
                         }
                     }
                 }
