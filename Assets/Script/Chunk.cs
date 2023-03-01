@@ -7,7 +7,7 @@ public class Chunk : MonoBehaviour
 {
  
     private int CHUNK_SIZE = 16;
-    private int CHUNK_SIZE_Y = 32;
+    private int CHUNK_SIZE_Y = 16;
 
     public Vector3Int chunkPosition;
     private Vector3 globalPosition;
@@ -167,19 +167,21 @@ public class Chunk : MonoBehaviour
 
         int tc = 0;
 
-        for (int S = -CHUNK_SIZE; S < CHUNK_SIZE; S++)
+        for (int Y = 0; Y < CHUNK_SIZE_Y; Y++)
         {
-            for (int Q = -CHUNK_SIZE; Q < CHUNK_SIZE; Q++)
+
+            for (int S = -CHUNK_SIZE; S < CHUNK_SIZE; S++)
             {
-                for (int R = -CHUNK_SIZE; R < CHUNK_SIZE; R++)
-                {
-                    for (int Y = 0; Y < CHUNK_SIZE_Y; Y++)
-                    {
+                 for (int Q = -CHUNK_SIZE; Q < CHUNK_SIZE; Q++)
+                 {
+                      for (int R = -CHUNK_SIZE; R < CHUNK_SIZE; R++)
+                      {
+                   
                         Vector4 position = new Vector4(S, Q, R, Y);
 
                        if (chunkDict.ContainsKey(position))
                         {
-
+                            
                             if (!chunkDict.ContainsKey(position + new Vector4(0, 0, 0, 1)))
                             {
 
@@ -208,6 +210,37 @@ public class Chunk : MonoBehaviour
 
                             }
 
+
+                            if (!chunkDict.ContainsKey(position + new Vector4(0, -1, 1, 0)))
+                            {
+
+                                for (int i = 0; i < 6; i++)
+                                {
+                                    this.vertices.Add(Hexledata.vert[i] + V4toV3(position) * 2);
+
+                                    this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                                }
+
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(1 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(4 + tc);
+                                this.tris.Add(1 + tc);
+                                this.tris.Add(2 + tc);
+                                this.tris.Add(3 + tc);
+                                this.tris.Add(0 + tc);
+                                this.tris.Add(4 + tc);
+                                this.tris.Add(5 + tc);
+
+                                tc += 6;
+
+                            }
+
+
+                            /*
                             if (!chunkDict.ContainsKey(position + new Vector4(0, 0, 0, -1)))
                             {
 
@@ -236,14 +269,16 @@ public class Chunk : MonoBehaviour
 
                             }
 
-                            if (!chunkDict.ContainsKey(position + new Vector4(1, 0, 0, 0)))
+                            
+
+                            if (!chunkDict.ContainsKey(position + new Vector4(1, -1, 0, 0)))
                             {
 
                                 
                                 this.vertices.Add(Hexledata.vert[4] + V4toV3(position) * 2);
                                 this.vertices.Add(Hexledata.vert[3] + V4toV3(position) * 2);
-                                this.vertices.Add(Hexledata.vert[9] + V4toV3(position) * 2);
                                 this.vertices.Add(Hexledata.vert[10] + V4toV3(position) * 2);
+                                this.vertices.Add(Hexledata.vert[9] + V4toV3(position) * 2);
 
                                 this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
                                 this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
@@ -263,9 +298,14 @@ public class Chunk : MonoBehaviour
                                 tc += 4;
 
                             }
-                        }
-                    }
-                }
+                            */
+
+                            Debug.Log(!chunkDict.ContainsKey(position + new Vector4(-1, 1, 0, 0)));
+
+ 
+                       }
+                      }
+                 }
             }
         }
     }
