@@ -23,8 +23,8 @@ public class World : MonoBehaviour
 
     void Start()
     {
-
-       // bruh();
+        //bruh();
+        //bruh2();
 
 
         worldDict.Add(new Vector3Int(0,0,0), new Chunk(new Vector3Int(0,0,0), gameObject.GetComponent<MeshFilter>(), material));
@@ -35,7 +35,26 @@ public class World : MonoBehaviour
 
 
 
-
+    public void bruh2()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                for (int z = 0; z < 4; z++)
+                {
+                    if (worldDict.ContainsKey(new Vector3Int(x, y, z)))
+                    {
+                        if (worldDict[new Vector3Int(x, y, z)].isMeshGen == false)
+                        {
+                            SendChunkToQueue(worldDict[new Vector3Int(x, y, z)]);
+                            worldDict[new Vector3Int(x, y, z)].isMeshGen = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 
 
@@ -56,17 +75,20 @@ public class World : MonoBehaviour
     }
 
 
+
+
     // Update is called once per frame
     void Update()
     {
 
 
-        UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
+      //  UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
 
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space) && firstspace == false)
         {
-            firstspace = true;  
+            firstspace = true;
+            StartCoroutine(RenderChunks());
         }
         if (Input.GetKeyDown(KeyCode.LeftControl)) {
           GameObject.Find("Player").transform.position = new Vector3(22, 122, 28);
@@ -96,11 +118,15 @@ public class World : MonoBehaviour
                 {
                     if (x >= 0 && y >= 0 && z >= 0 && x < WORLD_SIZE.x && y < WORLD_SIZE.y && z < WORLD_SIZE.x)
                     {
-                        if (worldDict[new Vector3Int(x, y, z)].isMeshGen == false)
+                        if (worldDict.ContainsKey(new Vector3Int(x, y, z)))
                         {
+                            if (worldDict[new Vector3Int(x, y, z)].isMeshGen == false)
+                            {
 
-                            SendChunkToQueue(worldDict[new Vector3Int(x, y, z)]);
-                            worldDict[new Vector3Int(x, y, z)].isMeshGen = true;
+                                SendChunkToQueue(worldDict[new Vector3Int(x, y, z)]);
+                                worldDict[new Vector3Int(x, y, z)].isMeshGen = true;
+
+                            }
 
                         }
 
@@ -141,7 +167,7 @@ public class World : MonoBehaviour
         {
             foreach (Chunk chunk in ChunkGenQueue.ToArray())
             {
-
+                Debug.Log("WHYYYYYYYYYY");
                 chunk.Ok();
                 yield return null;
             }

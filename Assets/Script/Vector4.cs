@@ -26,6 +26,12 @@ public class Vector4
         return new Vector4(a.s + b.s, a.q + b.q, a.r + b.r, a.y + b.y);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Vector4 operator *(Vector4 a, int b)
+    {
+        return new Vector4(a.s * b, a.q * b, a.r * b, a.y * b);
+    }
+
     public override string ToString()
     {
         return String.Format("({0}, {1}, {2}, {3})", this.s, this.q, this.r, this.y);
@@ -35,12 +41,12 @@ public class Vector4
     {
         public bool Equals(Vector4 x, Vector4 y)
         {
-            return (((x.s - y.s) + (x.q - y.q) + (x.r - y.r) + (x.y - y.y)) == 0);
+            return (x.s == y.s) && (x.q == y.q) && (x.r == y.r) && (x.y == y.y);
         }
 
         public int GetHashCode(Vector4 x)
         {
-            return x.s.GetHashCode() ^ x.q.GetHashCode() ^ x.r.GetHashCode() ^ x.y.GetHashCode();
+            return this.ToString().GetHashCode();
         }
     }
 

@@ -13,8 +13,8 @@ public class Chunk : MonoBehaviour
     public Vector3Int chunkPosition;
     private Vector3 globalPosition;
 
-    Dictionary<Vector4, Hex> chunkDict = new Dictionary<Vector4, Hex>(new Vector4EqualityComparer());
-
+    private Hex[] dict = new Hex[35 * 35 * 35 * 35];
+    private bool[] dictB = new bool[35 * 35 * 35 * 35];
 
 
     GameObject gameObject;
@@ -23,8 +23,6 @@ public class Chunk : MonoBehaviour
     public MeshFilter meshFilter;
 
     public Material material;
-
-
 
 
     public List<Vector3> vertices = new List<Vector3>();
@@ -55,12 +53,16 @@ public class Chunk : MonoBehaviour
 
         this.material = material;
 
-        Debug.Log("ok");
-
     }
 
     public void Ok()
     {
+
+        int test = 1347;
+
+        Debug.Log("Testing");
+        Debug.Log( V4toArr(ArrtoV4(test)));
+
         createAllChunk();
         createVoxels();
         MakeMesh();
@@ -114,50 +116,110 @@ public class Chunk : MonoBehaviour
         Destroy(this.gameObject.GetComponent<MeshCollider>());
     }
 
-    public Vector3 V4toV3(Vector4 v4)
+    public int V4toArr(Vector4 pos)
     {
-        return (new Vector3(-3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.s) + (new Vector3(3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.q) + (new Vector3(0, 0, -2 * Mathf.Sqrt(3)) * 0.12f * v4.r) + (new Vector3(0, 1, 0) * v4.y);
+        pos = pos + new Vector4(17, 17, 17, 1);
+
+        return (pos.s + pos.q * 33 + pos.r * 33 * 33 + pos.y * 33 * 33 * 33);
+
+
+    }
+
+    public Vector4 ArrtoV4(int pos)
+    {
+
+        int y = pos / (33 * 33 * 33);
+
+        int pos2 = pos % (33 * 33 * 33);
+
+        int r = pos2 / (33 * 33);
+
+        int pos3 = pos2 % (33 * 33);
+
+        int q = pos3 / 33;
+
+        int s = pos3 % 33;
+
+        return new Vector4(s, q, r, y) + new Vector4(-17, -17, -17, -1);
     }
 
 
+    public Vector3 V4toV3(Vector4 v4)
+    {
+        return (new Vector3(-3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.s) + (new Vector3(3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.q) + (new Vector3(0, 0, -2 * Mathf.Sqrt(3)) * 0.12f * v4.r) + (new Vector3(0, 1, 0) * v4.y * 1.25f);
+    }
 
+
+    public void createBAllChunk()
+    {
+
+
+
+    }
 
     public void createAllChunk()
     {
-        if(this.chunkPosition.y < 4)
+
+        int counter = 0;
+
+        int max = CHUNK_SIZE * 2 + 1;
+        int min = 1;
+        int zero = CHUNK_SIZE + 1;
+        int total = zero * 3;
+
+        int Q = max;
+        int R = min;
+        int S = zero;
+
+        while (true)
         {
-            for (int S = -CHUNK_SIZE; S < CHUNK_SIZE; S++)
+
+            counter++;
+
+            int normQ = Q - zero;
+            int normR = R - zero;
+            int normS = S - zero;
+
+            for(int i = 0; i <= CHUNK_SIZE_Y; i++)
             {
-                for (int Q = -CHUNK_SIZE; Q < CHUNK_SIZE; Q++)
-                {
-                    for (int R = -CHUNK_SIZE; R < CHUNK_SIZE; R++)
-                    {
-                        for (int Y = 0; Y < CHUNK_SIZE_Y; Y++)
-                        {
-
-                            voxelCreate(new Vector4(S,Q,R,Y));
-
-                        }
-                    }
-                }
+                voxelCreate(new Vector4(normQ, normR, normS, i));
+            
             }
-        }
 
-        foreach (KeyValuePair<Vector4, Hex> attachStat in this.chunkDict)
-        {
-            //Now you can access the key and value both separately from t$$anonymous$$s attachStat as:
-            //Debug.Log(attachStat.Key);
-           // Debug.Log(attachStat.Value);
+            if (R >= Mathf.Min(max, total - Q - min))
+            {
+                if(Q <= min){ break;}
+                else
+                {
+                    Q = Q - 1;
+                    R = Mathf.Max(min, 1 - (Q - zero));
+                    S = total - Q - R;
+                }
+
+            }
+            else
+            {
+                R += 1;
+                S -= 1;
+            }
+
         }
 
     }
 
     public void voxelCreate(Vector4 position)
     {
-        if (this.chunkDict.ContainsKey(position) == false)
+        // this.chunkDict.Add(position, new Hex());
+
+        int ok = V4toArr(position);
+        if(ok < dict.Length)
         {
-            this.chunkDict.Add(position, new Hex());
-          //  Debug.Log(position);
+            this.dict[ok] = new Hex();
+            this.dictB[ok] = true;
+        }
+        else
+        {
+            Debug.Log(ok + " " + position);
         }
     }
 
@@ -168,216 +230,223 @@ public class Chunk : MonoBehaviour
 
         int tc = 0;
 
+        float blockDist = 1.25f;
 
-        foreach (KeyValuePair<Vector4, Hex> X in chunkDict)
+        for (int X = 0; X < this.dict.Length; X++)
         {
+            if (this.dictB[X] == false) { continue; }
 
-            Debug.Log("what");
+            Vector4 bruh = ArrtoV4(X);
 
-            if(chunkDict.ContainsKey(X.Key))
+
+            //if (this.dictB[V4toArr(bruh + new Vector4(0, 0, 0, 1))] == false)
             {
 
-
-                Debug.Log(X.Key);
-                Debug.Log("ok");
-
-
-
-                if (!chunkDict.ContainsKey(X.Key + new Vector4(0, 0, 0, 1)))
+                for (int i = 0; i < 6; i++)
                 {
+                    this.vertices.Add(Hexledata.vert[i] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
 
-                    for (int i = 0; i < 6; i++)
-                    {
-                        this.vertices.Add(Hexledata.vert[i] + V4toV3(X.Key) * 2);
-
-                        this.uv.Add(new Vector3(0.25f, 0.25f));
-
-                    }
-
-                    this.tris.Add(0 + tc);
-                    this.tris.Add(1 + tc);
-                    this.tris.Add(3 + tc);
-                    this.tris.Add(0 + tc);
-                    this.tris.Add(3 + tc);
-                    this.tris.Add(4 + tc);
-                    this.tris.Add(1 + tc);
-                    this.tris.Add(2 + tc);
-                    this.tris.Add(3 + tc);
-                    this.tris.Add(0 + tc);
-                    this.tris.Add(4 + tc);
-                    this.tris.Add(5 + tc);
-
-                    tc += 6;
+                    this.uv.Add(new Vector3(0.25f, 0.25f));
 
                 }
 
+                this.tris.Add(0 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(4 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(4 + tc);
+                this.tris.Add(5 + tc);
+
+                tc += 6;
 
             }
 
-        }
 
 
-
-        /*
-
-
-        for (int Y = 0; Y < CHUNK_SIZE_Y; Y++)
-        {
-            for (int S = -CHUNK_SIZE; S < CHUNK_SIZE; S++)
+            //if (this.dictB[V4toArr(bruh + new Vector4(0, 0, 0, -1))] == false)
             {
-                 for (int Q = -CHUNK_SIZE; Q < CHUNK_SIZE; Q++)
-                 {
-                      for (int R = -CHUNK_SIZE; R < CHUNK_SIZE; R++)
-                      {
-                   
-                        Vector4 position = new Vector4(S, Q, R, Y);
 
-                       if (chunkDict.ContainsKey(position))
-                        {
-                            
-                            if (!chunkDict.ContainsKey(position + new Vector4(0, 0, 0, 1)))
-                            {
+                for (int i = 6; i < 12; i++)
+                {
+                    this.vertices.Add(Hexledata.vert[i] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
 
-                                for (int i = 0; i < 6; i++)
-                                {
-                                    this.vertices.Add(Hexledata.vert[i] + V4toV3(position) * 2);
-                                    
-                                    this.uv.Add(new Vector3(0.25f, 0.25f));
+                    this.uv.Add(new Vector3(0.25f, 0.25f));
 
-                                }
+                }
 
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(1 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(4 + tc);
-                                this.tris.Add(1 + tc);
-                                this.tris.Add(2 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(4 + tc);
-                                this.tris.Add(5 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(4 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(5 + tc);
+                this.tris.Add(4 + tc);
+                this.tris.Add(0 + tc);
 
-                                tc += 6;
+                tc += 6;
 
-                            }
-
-
-                            if (!chunkDict.ContainsKey(position + new Vector4(0, -1, 1, 0)))
-                            {
-
-                                for (int i = 0; i < 6; i++)
-                                {
-                                    this.vertices.Add(Hexledata.vert[i] + V4toV3(position) * 2);
-
-                                    this.uv.Add(new Vector3(0.25f, 0.25f));
-
-                                }
-
-                                Debug.Log(position);
-
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(1 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(4 + tc);
-                                this.tris.Add(1 + tc);
-                                this.tris.Add(2 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(4 + tc);
-                                this.tris.Add(5 + tc);
-
-                                tc += 6;
-
-                            }
-
-                            if(chunkDict.ContainsKey(position + new Vector4(0, -1, 1, 0)))
-                            {
-
-                                Debug.Log(position + new Vector4(0, -1, 1, 0));
-
-
-                            }
-
-
-                            
-                            if (!chunkDict.ContainsKey(position + new Vector4(0, 0, 0, -1)))
-                            {
-
-                                for (int i = 0; i < 6; i++)
-                                {
-                                    this.vertices.Add(Hexledata.vert[i] + V4toV3(position) * 2);
-
-                                    this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
-
-                                }
-
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(1 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(4 + tc);
-                                this.tris.Add(1 + tc);
-                                this.tris.Add(2 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(4 + tc);
-                                this.tris.Add(5 + tc);
-
-                                tc += 6;
-
-                            }
-
-                            
-
-                            if (!chunkDict.ContainsKey(position + new Vector4(1, -1, 0, 0)))
-                            {
-
-                                
-                                this.vertices.Add(Hexledata.vert[4] + V4toV3(position) * 2);
-                                this.vertices.Add(Hexledata.vert[3] + V4toV3(position) * 2);
-                                this.vertices.Add(Hexledata.vert[10] + V4toV3(position) * 2);
-                                this.vertices.Add(Hexledata.vert[9] + V4toV3(position) * 2);
-
-                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
-                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
-                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
-                                this.uv.Add(new Vector3(0.5f, 0.5f, 0.5f));
-
-
-
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(1 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(0 + tc);
-                                this.tris.Add(3 + tc);
-                                this.tris.Add(2 + tc);
-
-
-                                tc += 4;
-
-                            }
-                            
-
-                            Debug.Log(!chunkDict.ContainsKey(position + new Vector4(-1, 1, 0, 0)));
-
-
-
-
-        
-                       }
-                      }
-                 }
             }
+
+
+
+            //  if (this.dictB[V4toArr(bruh + new Vector4(-1, 1, 0, 0))] == false)
+            {
+
+                this.vertices.Add(Hexledata.vert[4] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[5] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[11] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[10] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                this.tris.Add(2 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(0 + tc);
+
+                tc += 4;
+
+            }
+
+            //if (this.dictB[V4toArr(bruh + new Vector4(0, 1, -1, 0))] == false)
+            {
+
+                this.vertices.Add(Hexledata.vert[3] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[4] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[10] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[9] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                this.tris.Add(2 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(0 + tc);
+
+                tc += 4;
+
+            }
+
+            //if ( this.dictB[V4toArr(bruh + new Vector4(1, 0, -1, 0))] == false)
+            {
+
+                this.vertices.Add(Hexledata.vert[2] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[3] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[9] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[8] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                this.tris.Add(2 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(0 + tc);
+
+                tc += 4;
+
+            }
+
+            //if (this.dictB[V4toArr(bruh + new Vector4(1, -1, 0, 0))] == false)
+            {
+
+                this.vertices.Add(Hexledata.vert[1] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[2] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[8] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[7] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                this.tris.Add(2 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(0 + tc);
+
+                tc += 4;
+
+            }
+
+            //if (this.dictB[V4toArr(bruh + new Vector4(0, -1, 1, 0))] == false)
+            {
+
+                this.vertices.Add(Hexledata.vert[0] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[1] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[7] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[6] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                this.tris.Add(2 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(0 + tc);
+
+                tc += 4;
+
+            }
+
+            //if(this.dictB[V4toArr(bruh + new Vector4(-1, 0, 1, 0))] == false)
+            {
+
+                this.vertices.Add(Hexledata.vert[5] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[0] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[6] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[11] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+                this.uv.Add(new Vector3(0.25f, 0.25f));
+
+                this.tris.Add(2 + tc);
+                this.tris.Add(1 + tc);
+                this.tris.Add(0 + tc);
+                this.tris.Add(3 + tc);
+                this.tris.Add(2 + tc);
+                this.tris.Add(0 + tc);
+
+                tc += 4;
+
+            }
+
+
+
+
         }
 
-
-
-        */
     }
-
 }
