@@ -120,7 +120,7 @@ public class Chunk : MonoBehaviour
     {
         pos = pos + new Vector4(17, 17, 17, 1);
 
-        return (pos.s + pos.q * 33 + pos.r * 33 * 33 + pos.y * 33 * 33 * 33);
+        return (pos.s + pos.q * 35 + pos.r * 35 * 35 + pos.y * 35 * 35 * 35);
 
 
     }
@@ -128,17 +128,17 @@ public class Chunk : MonoBehaviour
     public Vector4 ArrtoV4(int pos)
     {
 
-        int y = pos / (33 * 33 * 33);
+        int y = pos / (35 * 35 * 35);
 
-        int pos2 = pos % (33 * 33 * 33);
+        int pos2 = pos % (35 * 35 * 35);
 
-        int r = pos2 / (33 * 33);
+        int r = pos2 / (35 * 35);
 
-        int pos3 = pos2 % (33 * 33);
+        int pos3 = pos2 % (35 * 35);
 
-        int q = pos3 / 33;
+        int q = pos3 / 35;
 
-        int s = pos3 % 33;
+        int s = pos3 % 35;
 
         return new Vector4(s, q, r, y) + new Vector4(-17, -17, -17, -1);
     }
@@ -239,7 +239,7 @@ public class Chunk : MonoBehaviour
             Vector4 bruh = ArrtoV4(X);
 
 
-            //if (this.dictB[V4toArr(bruh + new Vector4(0, 0, 0, 1))] == false)
+            if (this.dictB[V4toArr(bruh + new Vector4(0, 0, 0, 1))] == false)
             {
 
                 for (int i = 0; i < 6; i++)
@@ -269,7 +269,7 @@ public class Chunk : MonoBehaviour
 
 
 
-            //if (this.dictB[V4toArr(bruh + new Vector4(0, 0, 0, -1))] == false)
+            if (this.dictB[V4toArr(bruh + new Vector4(0, 0, 0, -1))] == false)
             {
 
                 for (int i = 6; i < 12; i++)
@@ -299,7 +299,7 @@ public class Chunk : MonoBehaviour
 
 
 
-            //  if (this.dictB[V4toArr(bruh + new Vector4(-1, 1, 0, 0))] == false)
+            if (this.dictB[V4toArr(bruh + new Vector4(-1, 1, 0, 0))] == false)
             {
 
                 this.vertices.Add(Hexledata.vert[4] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
@@ -323,7 +323,7 @@ public class Chunk : MonoBehaviour
 
             }
 
-            //if (this.dictB[V4toArr(bruh + new Vector4(0, 1, -1, 0))] == false)
+            if (this.dictB[V4toArr(bruh + new Vector4(0, 1, -1, 0))] == false)
             {
 
                 this.vertices.Add(Hexledata.vert[3] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
@@ -347,7 +347,7 @@ public class Chunk : MonoBehaviour
 
             }
 
-            //if ( this.dictB[V4toArr(bruh + new Vector4(1, 0, -1, 0))] == false)
+            if ( this.dictB[V4toArr(bruh + new Vector4(1, 0, -1, 0))] == false)
             {
 
                 this.vertices.Add(Hexledata.vert[2] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
@@ -371,7 +371,7 @@ public class Chunk : MonoBehaviour
 
             }
 
-            //if (this.dictB[V4toArr(bruh + new Vector4(1, -1, 0, 0))] == false)
+            if (this.dictB[V4toArr(bruh + new Vector4(1, -1, 0, 0))] == false)
             {
 
                 this.vertices.Add(Hexledata.vert[1] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
@@ -395,7 +395,7 @@ public class Chunk : MonoBehaviour
 
             }
 
-            //if (this.dictB[V4toArr(bruh + new Vector4(0, -1, 1, 0))] == false)
+            if (this.dictB[V4toArr(bruh + new Vector4(0, -1, 1, 0))] == false)
             {
 
                 this.vertices.Add(Hexledata.vert[0] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
@@ -419,7 +419,7 @@ public class Chunk : MonoBehaviour
 
             }
 
-            //if(this.dictB[V4toArr(bruh + new Vector4(-1, 0, 1, 0))] == false)
+            if(this.dictB[V4toArr(bruh + new Vector4(-1, 0, 1, 0))] == false)
             {
 
                 this.vertices.Add(Hexledata.vert[5] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);

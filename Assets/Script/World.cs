@@ -23,13 +23,13 @@ public class World : MonoBehaviour
 
     void Start()
     {
-        //bruh();
-        //bruh2();
+        bruh();
+        bruh2();
 
 
-        worldDict.Add(new Vector3Int(0,0,0), new Chunk(new Vector3Int(0,0,0), gameObject.GetComponent<MeshFilter>(), material));
+        //worldDict.Add(new Vector3Int(0,0,0), new Chunk(new Vector3Int(0,0,0), gameObject.GetComponent<MeshFilter>(), material));
 
-        worldDict[new Vector3Int(0,0,0)].Ok();
+        //worldDict[new Vector3Int(0,0,0)].Ok();
 
     }
 
