@@ -38,14 +38,27 @@ public class Chunk : MonoBehaviour
     public bool isMeshGen = false;
 
 
-    public Chunk(Vector3Int chunkPosition, MeshFilter mesh, Material material)
+    public Chunk(Vector3Int chunkPos, MeshFilter mesh, Material material)
     {
 
-        this.gameObject = new GameObject("Chunk" + chunkPosition, typeof(MeshFilter), typeof(MeshRenderer));
+        this.gameObject = new GameObject("Chunk" + chunkPos, typeof(MeshFilter), typeof(MeshRenderer));
 
-        this.chunkPosition = chunkPosition;
+        this.chunkPosition = new Vector3Int(chunkPosition.x, chunkPosition.y, chunkPosition.z);
 
-        this.globalPosition = new Vector3(chunkPosition.x, chunkPosition.y, chunkPosition.z);
+
+        if(chunkPos.x % 2 == 0)
+        {
+
+                this.globalPosition = new Vector3(chunkPos.x * 0.645f, chunkPos.y * 0.5f, chunkPos.z * 0.795f);
+        }
+        else
+        {
+
+         this.globalPosition = new Vector3(chunkPos.x * 0.645f, chunkPos.y * 0.5f, (chunkPos.z + 0.5f) * 0.795f);
+
+        }
+
+        this.gameObject.transform.position = this.globalPosition * 32;
 
         this.isMeshGen = false;
 
@@ -146,7 +159,7 @@ public class Chunk : MonoBehaviour
 
     public Vector3 V4toV3(Vector4 v4)
     {
-        return (new Vector3(-3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.s) + (new Vector3(3f, 0, Mathf.Sqrt(3)) * 0.12f * v4.q) + (new Vector3(0, 0, -2 * Mathf.Sqrt(3)) * 0.12f * v4.r) + (new Vector3(0, 1, 0) * v4.y * 1.25f);
+        return (new Vector3(-3f, 0, Mathf.Sqrt(3)) * 0.115f * v4.s) + (new Vector3(3f, 0, Mathf.Sqrt(3)) * 0.115f * v4.q) + (new Vector3(0, 0, -2 * Mathf.Sqrt(3)) * 0.12f * v4.r) + (new Vector3(0, 1, 0) * 0.615f * v4.y);
     }
 
 
@@ -230,7 +243,7 @@ public class Chunk : MonoBehaviour
 
         int tc = 0;
 
-        float blockDist = 1.25f;
+        float blockDist = 1.22f;
 
         for (int X = 0; X < this.dict.Length; X++)
         {
@@ -244,7 +257,7 @@ public class Chunk : MonoBehaviour
 
                 for (int i = 0; i < 6; i++)
                 {
-                    this.vertices.Add(Hexledata.vert[i] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                    this.vertices.Add(Hexledata.vert[i] + V4toV3(bruh) * blockDist);
 
                     this.uv.Add(new Vector3(0.25f, 0.25f));
 
@@ -274,7 +287,7 @@ public class Chunk : MonoBehaviour
 
                 for (int i = 6; i < 12; i++)
                 {
-                    this.vertices.Add(Hexledata.vert[i] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                    this.vertices.Add(Hexledata.vert[i] + V4toV3(bruh) * blockDist);
 
                     this.uv.Add(new Vector3(0.25f, 0.25f));
 
@@ -302,10 +315,10 @@ public class Chunk : MonoBehaviour
             if (this.dictB[V4toArr(bruh + new Vector4(-1, 1, 0, 0))] == false)
             {
 
-                this.vertices.Add(Hexledata.vert[4] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[5] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[11] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[10] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[4] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[5] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[11] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[10] + V4toV3(bruh) * blockDist);
 
                 this.uv.Add(new Vector3(0.25f, 0.25f));
                 this.uv.Add(new Vector3(0.25f, 0.25f));
@@ -326,10 +339,10 @@ public class Chunk : MonoBehaviour
             if (this.dictB[V4toArr(bruh + new Vector4(0, 1, -1, 0))] == false)
             {
 
-                this.vertices.Add(Hexledata.vert[3] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[4] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[10] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[9] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[3] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[4] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[10] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[9] + V4toV3(bruh) * blockDist);
 
                 this.uv.Add(new Vector3(0.25f, 0.25f));
                 this.uv.Add(new Vector3(0.25f, 0.25f));
@@ -350,10 +363,10 @@ public class Chunk : MonoBehaviour
             if ( this.dictB[V4toArr(bruh + new Vector4(1, 0, -1, 0))] == false)
             {
 
-                this.vertices.Add(Hexledata.vert[2] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[3] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[9] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[8] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[2] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[3] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[9] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[8] + V4toV3(bruh) * blockDist);
 
                 this.uv.Add(new Vector3(0.25f, 0.25f));
                 this.uv.Add(new Vector3(0.25f, 0.25f));
@@ -374,10 +387,10 @@ public class Chunk : MonoBehaviour
             if (this.dictB[V4toArr(bruh + new Vector4(1, -1, 0, 0))] == false)
             {
 
-                this.vertices.Add(Hexledata.vert[1] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[2] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[8] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[7] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[1] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[2] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[8] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[7] + V4toV3(bruh) * blockDist);
 
                 this.uv.Add(new Vector3(0.25f, 0.25f));
                 this.uv.Add(new Vector3(0.25f, 0.25f));
@@ -398,10 +411,10 @@ public class Chunk : MonoBehaviour
             if (this.dictB[V4toArr(bruh + new Vector4(0, -1, 1, 0))] == false)
             {
 
-                this.vertices.Add(Hexledata.vert[0] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[1] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[7] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[6] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[0] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[1] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[7] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[6] + V4toV3(bruh) * blockDist);
 
                 this.uv.Add(new Vector3(0.25f, 0.25f));
                 this.uv.Add(new Vector3(0.25f, 0.25f));
@@ -422,10 +435,10 @@ public class Chunk : MonoBehaviour
             if(this.dictB[V4toArr(bruh + new Vector4(-1, 0, 1, 0))] == false)
             {
 
-                this.vertices.Add(Hexledata.vert[5] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[0] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[6] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
-                this.vertices.Add(Hexledata.vert[11] + V4toV3(bruh) * blockDist + this.chunkPosition * 32);
+                this.vertices.Add(Hexledata.vert[5] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[0] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[6] + V4toV3(bruh) * blockDist);
+                this.vertices.Add(Hexledata.vert[11] + V4toV3(bruh) * blockDist);
 
                 this.uv.Add(new Vector3(0.25f, 0.25f));
                 this.uv.Add(new Vector3(0.25f, 0.25f));

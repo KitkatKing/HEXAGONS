@@ -37,11 +37,11 @@ public class World : MonoBehaviour
 
     public void bruh2()
     {
-        for (int x = 0; x < 4; x++)
+        for (int x = 0; x < 10; x++)
         {
             for (int y = 0; y < 4; y++)
             {
-                for (int z = 0; z < 4; z++)
+                for (int z = 0; z < 10; z++)
                 {
                     if (worldDict.ContainsKey(new Vector3Int(x, y, z)))
                     {
@@ -82,7 +82,7 @@ public class World : MonoBehaviour
     {
 
 
-      //  UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
+       // UpdateChunksAroundPlayer(PlayerToChunk(ok.transform.position));
 
 
         if (Input.GetKeyUp(KeyCode.Space) && firstspace == false)

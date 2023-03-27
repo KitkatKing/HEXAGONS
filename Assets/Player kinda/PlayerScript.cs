@@ -1,4 +1,4 @@
-using System.Collections;
+  using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -300,15 +300,9 @@ public class PlayerScript : MonoBehaviour
 
     public void FirstPersonPlayerGravity()
     {
-
         Rigidbody rb = GetComponent<Rigidbody>();
 
-
         RaycastHit hit;
-
-
-     
-
 
             //Debug.DrawLine(transform.position + transform.forward * 0.7f, transform.position);
 
@@ -323,11 +317,7 @@ public class PlayerScript : MonoBehaviour
                 isGrounded = false;
             }
 
-
-
             rb.AddForce(new Vector3(0, -1, 0) * fallVelocity);
-        
-
     }
 
     public void FirstPersonPlayerCrouchSlide()
